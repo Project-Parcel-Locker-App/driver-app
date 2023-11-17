@@ -1,6 +1,4 @@
-// ActiveParcelLockerSelector.tsx
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 
 interface ActiveParcelLockerSelectorProps {
   onSelect: (lockerId: string) => void;
@@ -20,30 +18,22 @@ const ActiveParcelLockerSelector: React.FC<ActiveParcelLockerSelectorProps> = ({
         console.error('Error fetching active lockers:', error);
       });
     */
-  }, []); // Empty dependency array to ensure the effect runs only once
 
-  // 一から五までの仮のデータ
-  const dummyLockers = ['1', '2', '3', '4', '5'];
+    // 一から五までのデータを使用
+    const lockers = ['1', '2', '3', '4', '5'];
+    setActiveLockers(lockers);
+  }, []); // Empty dependency array to ensure the effect runs only once
 
   return (
     <div>
       <label>Select Active Parcel Locker: </label>
       <select onChange={(e) => onSelect(e.target.value)}>
         <option value="">Select an active locker</option>
-        {activeLockers.length > 0 ? (
-          activeLockers.map((lockerId) => (
-            <option key={lockerId} value={lockerId}>
-              Parcel Locker {lockerId}
-            </option>
-          ))
-        ) : (
-          // ダミーデータを使用
-          dummyLockers.map((lockerId) => (
-            <option key={lockerId} value={lockerId}>
-              Parcel Locker {lockerId}
-            </option>
-          ))
-        )}
+        {activeLockers.map((lockerId) => (
+          <option key={lockerId} value={lockerId}>
+            Parcel Locker {lockerId}
+          </option>
+        ))}
       </select>
     </div>
   );

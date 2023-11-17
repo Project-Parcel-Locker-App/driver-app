@@ -9,28 +9,22 @@ interface Cabinet {
   parcel: any; // Replace 'any' with the actual type of 'parcel'
 }
 
-interface FreeCabinetsListProps {
+interface DeliverProps {
   lockerId: string;
 }
 
-const FreeCabinetsList: React.FC<FreeCabinetsListProps> = ({ lockerId }) => {
+const Deliver: React.FC<DeliverProps> = ({ lockerId }) => {
   const [cabinetStates, setCabinetStates] = useState<string[]>([]);
-  const [cabinets, setCabinets] = useState<Cabinet[]>([]); // Add this line to declare 'cabinets'
+  const [cabinets, setCabinets] = useState<Cabinet[]>([]);
 
-  // Fetch cabinet states from the backend
   const fetchCabinetStates = async () => {
     try {
       const response = await axios.get(`http://localhost:3000/api/lockers/${lockerId}`);
-      
-      // Assuming response.data.cabinets is an array of cabinets
       const fetchedCabinets: Cabinet[] = response.data.cabinets || [];
-      
-      // Extract cabinet_status from the cabinets
       const cabinetStatusArray = fetchedCabinets.map((cabinet) => cabinet.cabinet_status);
-
       console.log('cabinetStatusArray:', cabinetStatusArray);
       setCabinetStates(cabinetStatusArray);
-      setCabinets(fetchedCabinets); // Set 'cabinets' state
+      setCabinets(fetchedCabinets);
     } catch (error) {
       console.error('Error fetching cabinet states:', error);
     }
@@ -49,7 +43,7 @@ const FreeCabinetsList: React.FC<FreeCabinetsListProps> = ({ lockerId }) => {
       for (let row = 0; row < 4; row++) {
         const cabinetNumber = row * 4 + col + 1;
 
-        const isFree = cabinets[cabinetNumber - 1]?.parcel == null;
+        const isDeliver = cabinetStates[cabinetNumber - 1] === 'available' && cabinets[cabinetNumber - 1]?.parcel == null;
 
         arrangedCabinets.push(
           <div
@@ -59,7 +53,7 @@ const FreeCabinetsList: React.FC<FreeCabinetsListProps> = ({ lockerId }) => {
               height: '80px',
               border: '1px solid black',
               textAlign: 'center',
-              backgroundColor: isFree ? 'green' : 'white', // Adjust color for DELIVER
+              backgroundColor: isDeliver ? 'pink' : 'white', // Adjust color for DELIVER
               color: 'black',
               display: 'flex',
               flexDirection: 'column',
@@ -76,12 +70,9 @@ const FreeCabinetsList: React.FC<FreeCabinetsListProps> = ({ lockerId }) => {
     return arrangedCabinets;
   };
 
-  // Add console.log for cabinetStates
-  console.log('cabinetStates:', cabinetStates);
-
   return (
     <div>
-      <h2>Free Cabinets (nothing inside) at Parcel Locker {lockerId}</h2>
+      <h2>Deliver Cabinets at Parcel Locker {lockerId}</h2>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 80px)', gap: '10px' }}>
         {arrangeCabinets()}
       </div>
@@ -89,4 +80,4 @@ const FreeCabinetsList: React.FC<FreeCabinetsListProps> = ({ lockerId }) => {
   );
 };
 
-export default FreeCabinetsList;
+export default Deliver;
