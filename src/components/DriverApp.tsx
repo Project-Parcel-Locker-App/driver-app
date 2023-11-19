@@ -1,66 +1,78 @@
-// DriverApp.tsx
 import React, { useState } from 'react';
-import ActiveParcelLockerSelector from './ActiveParcelLockerSelector';
+import { BrowserRouter as Router, Link, Routes, Route, Outlet } from 'react-router-dom';
 import FreeCabinetsList from './FreeCabinetsList';
-import Pickup from './Pickup'; // Pickup コンポーネントの追加
-import Deliver from './Deliver'; // Deliver コンポーネントの追加
+import Pickup from './Pickup';
+import Deliver from './Deliver';
 
 import '../App.css';
 
+const ActiveParcelLockerSelector: React.FC<{ onSelect: (lockerId: string) => void }> = ({ onSelect }) => {
+  const lockerIds = ['1', '2', '3', '4', '5']; // ロッカーのIDリスト
+
+  return (
+    <div>
+      <h2>Select Active Parcel Locker</h2>
+      {/* ロッカーIDごとにボタンを表示 */}
+      {lockerIds.map((lockerId) => (
+        <button key={lockerId} onClick={() => onSelect(lockerId)}>
+          <Link to={`/locker/${lockerId}`}>Locker {lockerId}</Link>
+        </button>
+      ))}
+    </div>
+  );
+};
+
 const DriverApp: React.FC = () => {
   const [selectedLocker, setSelectedLocker] = useState<string | null>(null);
-  const [viewMode, setViewMode] = useState<string>('freeCabinets'); // 表示モードの状態を管理
 
   // ロッカーが選択されたときのハンドラー
   const handleLockerSelect = (lockerId: string) => {
     setSelectedLocker(lockerId);
   };
 
-  // 表示モードを切り替えるハンドラー
-  const handleViewModeChange = (mode: string) => {
-    setViewMode(mode);
-  };
-
   return (
-    <>
-      <h1>Driver App</h1>
-      {/* アクティブなパーセルロッカーの選択コンポーネント */}
-      <ActiveParcelLockerSelector onSelect={handleLockerSelect} />
-
-      {/* ビューモードを切り替えるためのボタンなど */}
+    <Router>
       <div>
-        <button onClick={() => handleViewModeChange('freeCabinets')}>Free Cabinets</button>
-        <button onClick={() => handleViewModeChange('pickup')}>Pickup</button>
-        <button onClick={() => handleViewModeChange('deliver')}>Deliver</button>
+        <h1>Driver App</h1>
+
+        {/* ロッカー選択画面 */}
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <div>
+                <ActiveParcelLockerSelector onSelect={(lockerId) => handleLockerSelect(lockerId)} />
+                <Outlet />
+              </div>
+            }
+          />
+          <Route
+            path="/locker/:lockerId"
+            element={
+              <div>
+                <Link to="/freeCabinets">
+                  <button>Free Cabinets</button>
+                </Link>
+                <Link to="/pickup">
+                  <button>Pickup</button>
+                </Link>
+                <Link to="/deliver">
+                  <button>Deliver</button>
+                </Link>
+                <Outlet />
+              </div>
+            }
+          />
+        </Routes>
+
+        {/* 各ビュー */}
+        <Routes>
+          <Route path="/freeCabinets" element={<FreeCabinetsList lockerId={selectedLocker || ''} />} />
+          <Route path="/pickup" element={<Pickup lockerId={selectedLocker || ''} />} />
+          <Route path="/deliver" element={<Deliver lockerId={selectedLocker || ''} />} />
+        </Routes>
       </div>
-
-      {/* 表示モードに基づいてコンポーネントを切り替え */}
-      {viewMode === 'freeCabinets' && (
-        <>
-          {selectedLocker && <p>Selected Parcel Locker: {selectedLocker}</p>}
-          {/* 空きキャビネットのリストを表示するコンポーネント */}
-          <FreeCabinetsList lockerId={selectedLocker || ''} />
-        </>
-      )}
-
-      {viewMode === 'pickup' && (
-        <>
-          {selectedLocker && <p>Selected Parcel Locker: {selectedLocker}</p>}
-          {/* Pickup コンポーネント */}
-          <Pickup lockerId={selectedLocker || ''} />
-        </>
-      )}
-
-      {viewMode === 'deliver' && (
-        <>
-          {selectedLocker && <p>Selected Parcel Locker: {selectedLocker}</p>}
-          {/* Deliver コンポーネント */}
-          <Deliver lockerId={selectedLocker || ''} />
-        </>
-      )}
-
-      
-    </>
+    </Router>
   );
 };
 
