@@ -9,28 +9,22 @@ interface Cabinet {
   parcel: any; // Replace 'any' with the actual type of 'parcel'
 }
 
-interface FreeCabinetsListProps {
+interface FreeProps {
   lockerId: string;
 }
 
-const FreeCabinetsList: React.FC<FreeCabinetsListProps> = ({ lockerId }) => {
+const Free: React.FC<FreeProps> = ({ lockerId }) => {
   const [cabinetStates, setCabinetStates] = useState<string[]>([]);
-  const [cabinets, setCabinets] = useState<Cabinet[]>([]); // Add this line to declare 'cabinets'
+  const [cabinets, setCabinets] = useState<Cabinet[]>([]);
 
-  // Fetch cabinet states from the backend
   const fetchCabinetStates = async () => {
     try {
       const response = await axios.get(`http://localhost:3000/api/lockers/${lockerId}`);
-      
-      // Assuming response.data.cabinets is an array of cabinets
       const fetchedCabinets: Cabinet[] = response.data.cabinets || [];
-      
-      // Extract cabinet_status from the cabinets
       const cabinetStatusArray = fetchedCabinets.map((cabinet) => cabinet.cabinet_status);
-
       console.log('cabinetStatusArray:', cabinetStatusArray);
       setCabinetStates(cabinetStatusArray);
-      setCabinets(fetchedCabinets); // Set 'cabinets' state
+      setCabinets(fetchedCabinets);
     } catch (error) {
       console.error('Error fetching cabinet states:', error);
     }
@@ -45,21 +39,25 @@ const FreeCabinetsList: React.FC<FreeCabinetsListProps> = ({ lockerId }) => {
   const arrangeCabinets = () => {
     const arrangedCabinets: JSX.Element[] = [];
 
-    for (let col = 0; col < 4; col++) {
-      for (let row = 0; row < 4; row++) {
-        const cabinetNumber = row * 4 + col + 1;
+    // Counter for tracking the total number of cabinets
+    let cabinetCount = 1;
 
-        const isFree = cabinets[cabinetNumber - 1]?.parcel == null;
+    // Loop through each row
+    for (let rowIndex = 0; rowIndex < 3; rowIndex++) {
+      // Loop through each cabinet in the row
+      for (let colIndex = 0; colIndex < 5; colIndex++) {
+        const isFree = cabinetStates[cabinetCount - 1] === 'available' && cabinets[cabinetCount - 1]?.parcel == null;
 
         arrangedCabinets.push(
           <div
-            key={cabinetNumber}
+            key={cabinetCount}
             style={{
+              position: 'relative',
               width: '80px',
               height: '80px',
               border: '1px solid black',
               textAlign: 'center',
-              backgroundColor: isFree ? 'green' : 'white', // Adjust color for DELIVER
+              backgroundColor: isFree ? 'green' : 'white',
               color: 'black',
               display: 'flex',
               flexDirection: 'column',
@@ -67,26 +65,39 @@ const FreeCabinetsList: React.FC<FreeCabinetsListProps> = ({ lockerId }) => {
               justifyContent: 'center',
             }}
           >
-            <div>{cabinetNumber}</div>
+            <div>{cabinetCount}</div>
           </div>
         );
+
+        // Increment the cabinet count
+        cabinetCount++;
       }
     }
 
-    return arrangedCabinets;
+    return (
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(5, 80px)',
+          gap: '10px',
+          justifyContent: 'center',
+          border: '2px solid black',
+          padding: '10px',
+        }}
+      >
+        {arrangedCabinets}
+      </div>
+    );
   };
-
-  // Add console.log for cabinetStates
-  console.log('cabinetStates:', cabinetStates);
 
   return (
     <div>
-      <h2>Free Cabinets (nothing inside) at Parcel Locker {lockerId}</h2>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 80px)', gap: '10px' }}>
-        {arrangeCabinets()}
-      </div>
+      <h2>Locker {lockerId}</h2>
+      <h2>Free Cabinets</h2>
+
+      {arrangeCabinets()}
     </div>
   );
 };
 
-export default FreeCabinetsList;
+export default Free;
