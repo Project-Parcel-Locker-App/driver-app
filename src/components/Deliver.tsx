@@ -90,45 +90,6 @@ const Deliver: React.FC<DeliverProps> = ({ lockerId }) => {
     );
   };
 
-
-/*   // Function to arrange cabinets in the specified format
-  const arrangeCabinets = () => {
-    const arrangedCabinets: JSX.Element[] = [];
-
-    for (let col = 0; col < 4; col++) {
-      for (let row = 0; row < 4; row++) {
-        const cabinetNumber = row * 4 + col + 1;
-
-        const isDeliver = cabinetStates[cabinetNumber - 1] === 'available' && cabinets[cabinetNumber - 1]?.parcel == null;
-
-        arrangedCabinets.push(
-          <div
-            key={cabinetNumber}
-            style={{
-              width: '80px',
-              height: '80px',
-              border: '1px solid black',
-              textAlign: 'center',
-              backgroundColor: isDeliver ? 'pink' : 'white', // Adjust color for DELIVER
-              color: 'black',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              
-              
-
-              justifyContent: 'center',
-            }}
-          >
-            <div>{cabinetNumber}</div>
-          </div>
-        );
-      }
-    }
-
-    return arrangedCabinets;
-  }; */
-
   return (
     <div>
       <h2>Locker {lockerId}</h2>
