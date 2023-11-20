@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Link, Routes, Route, Outlet } from 'react-rout
 import FreeCabinetsList from './FreeCabinetsList';
 import Pickup from './Pickup';
 import Deliver from './Deliver';
+import PickupDetail from './PickupDetail';
 
 import '../App.css';
 
@@ -141,6 +142,11 @@ const DriverApp: React.FC = () => {
               </div>
             }
           />
+          
+         <Route
+            path="/pickup/:cabinetId"
+            element={<PickupDetail lockerId={selectedLocker || ''} />}
+          />
         </Routes>
 
         {/* 各ビュー */}
@@ -149,6 +155,9 @@ const DriverApp: React.FC = () => {
           <Route path="/pickup" element={<Pickup lockerId={selectedLocker || ''} />} />
           <Route path="/deliver" element={<Deliver lockerId={selectedLocker || ''} />} />
         </Routes>
+
+          
+
       </div>
     </Router>
   );
