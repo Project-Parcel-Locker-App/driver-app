@@ -1,7 +1,3 @@
-
-
-
-
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { BrowserRouter as Router, Link, Routes, Route, Outlet } from 'react-router-dom';
@@ -11,12 +7,32 @@ import Deliver from './Deliver';
 
 import '../App.css';
 
+const Header: React.FC = () => {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center' }}>
+      <Link to="/">
+        <h3 style={{ margin: '0', marginRight: '20px' }}>Driver App</h3>
+      </Link>
+      <Link to="/freeCabinets">
+        <button>Free Cabinets</button>
+      </Link>
+      <Link to="/pickup">
+        <button>Pickup</button>
+      </Link>
+      <Link to="/deliver">
+        <button>Deliver</button>
+      </Link>
+    </div>
+  );
+};
+
+
 const ActiveParcelLockerSelector: React.FC<{ onSelect: (lockerId: string) => void }> = ({ onSelect }) => {
   const [activeLockers, setActiveLockers] = useState<string[]>([]);
   const [nearestLockerId, setNearestLockerId] = useState<string | null>(null);
 
-  
 
+ 
 /* 
   useEffect(() => {
     // APIのベースURLとドライバーIDの環境変数を使用します
@@ -38,12 +54,9 @@ const ActiveParcelLockerSelector: React.FC<{ onSelect: (lockerId: string) => voi
  */
 
 
-
-
-
   useEffect(() => {
     // バックエンドのエンドポイントを使用して最寄りのロッカーIDを取得
-    //ドライバーIDは固定。一人なので。
+    // ドライバーIDは固定。一人なので。
     axios.get('http://localhost:3000/api/lockers/nearest/21c4622e-31cc-4883-a9f4-b01b831343b1')
       .then((response) => {
         // 最寄りのロッカーIDを取得し、状態にセット
@@ -92,7 +105,10 @@ const DriverApp: React.FC = () => {
   return (
     <Router>
       <div>
-        <h1>Driver App</h1>
+
+        {/* ヘッダー */}
+        <Header />
+       
 
         {/* ロッカー選択画面 */}
         <Routes>
@@ -109,15 +125,18 @@ const DriverApp: React.FC = () => {
             path="/locker/:lockerId"
             element={
               <div>
-                <Link to="/freeCabinets">
+                <h2>Select cabinets status</h2>
+                <div>
+                  <Link to="/freeCabinets">
                   <button>Free Cabinets</button>
-                </Link>
-                <Link to="/pickup">
+                  </Link>
+                  <Link to="/pickup">
                   <button>Pickup</button>
-                </Link>
-                <Link to="/deliver">
+                  </Link>
+                  <Link to="/deliver">
                   <button>Deliver</button>
-                </Link>
+                  </Link>
+                </div>
                 <Outlet />
               </div>
             }
