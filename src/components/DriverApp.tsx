@@ -5,6 +5,7 @@ import FreeCabinetsList from './FreeCabinetsList';
 import Pickup from './Pickup';
 import Deliver from './Deliver';
 import PickupDetail from './PickupDetail';
+import DeliverDetail from './DeliverDetail';
 
 import '../App.css';
 
@@ -33,34 +34,10 @@ const ActiveParcelLockerSelector: React.FC<{ onSelect: (lockerId: string) => voi
   const [nearestLockerId, setNearestLockerId] = useState<string | null>(null);
 
 
- 
-/* 
   useEffect(() => {
-    // APIのベースURLとドライバーIDの環境変数を使用します
-    const apiBaseUrl = process.env.REACT_APP_API_BASE_URL || 'http://localhost:3000/api';
-    const driverId = process.env.REACT_APP_DRIVER_ID || '21c4622e-31cc-4883-a9f4-b01b831343b1';
-
-    // バックエンドのエンドポイントを使用して最寄りのロッカーIDを取得
-    axios.get(`${apiBaseUrl}/lockers/nearest/${driverId}`)
-      .then((response) => {
-        // 最寄りのロッカーIDを取得し、状態にセット
-        setNearestLockerId(response.data[0]?.locker_id || null);
-        setActiveLockers(response.data.map((locker: any) => locker.locker_id));
-      })
-      .catch((error) => {
-        console.error('Error fetching active lockers:', error);
-      });
-  }, []); // Empty dependency array to ensure the effect runs only once
-
- */
-
-
-  useEffect(() => {
-    // バックエンドのエンドポイントを使用して最寄りのロッカーIDを取得
-    // ドライバーIDは固定。一人なので。
+    // one driver
     axios.get('http://localhost:3000/api/lockers/nearest/21c4622e-31cc-4883-a9f4-b01b831343b1')
       .then((response) => {
-        // 最寄りのロッカーIDを取得し、状態にセット
         setNearestLockerId(response.data[0]?.locker_id || null);
         setActiveLockers(response.data.map((locker: any) => locker.locker_id));
       })
@@ -72,7 +49,7 @@ const ActiveParcelLockerSelector: React.FC<{ onSelect: (lockerId: string) => voi
   return (
     <div>
       <h2>Select Active Parcel Locker</h2>
-      {/* ロッカーIDごとにボタンを表示 */}
+      {/* display botton according to locker id */}
       <div style={{ display: 'flex' }}>
         {activeLockers
           .sort((a, b) => parseInt(a) - parseInt(b))
@@ -98,7 +75,7 @@ const ActiveParcelLockerSelector: React.FC<{ onSelect: (lockerId: string) => voi
 const DriverApp: React.FC = () => {
   const [selectedLocker, setSelectedLocker] = useState<string | null>(null);
 
-  // ロッカーが選択されたときのハンドラー
+  
   const handleLockerSelect = (lockerId: string) => {
     setSelectedLocker(lockerId);
   };
@@ -147,7 +124,19 @@ const DriverApp: React.FC = () => {
             path="/pickup/:cabinetId"
             element={<PickupDetail lockerId={selectedLocker || ''} />}
           />
+
+
+         <Route
+            path="/deliver/:cabinetId"
+            element={<DeliverDetail lockerId={selectedLocker || ''} />}
+          />
+
+
+
+
         </Routes>
+
+      
 
         {/* 各ビュー */}
         <Routes>

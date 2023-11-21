@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
+
 
 interface Cabinet {
   id: number;
@@ -49,6 +51,11 @@ const Deliver: React.FC<DeliverProps> = ({ lockerId }) => {
         const isDeliver = cabinetStates[cabinetCount - 1] === 'available' && cabinets[cabinetCount - 1]?.parcel == null;
 
         arrangedCabinets.push(
+          <Link
+          key={cabinetCount}
+          to={`/deliver/${cabinetCount}`} 
+          style={{ textDecoration: 'none' }}
+        >
           <div
             key={cabinetCount}
             style={{
@@ -67,6 +74,7 @@ const Deliver: React.FC<DeliverProps> = ({ lockerId }) => {
           >
             <div>{cabinetCount}</div>
           </div>
+          </Link>
         );
 
         // Increment the cabinet count
