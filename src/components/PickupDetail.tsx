@@ -8,12 +8,6 @@ interface PickupDetailProps {
 const PickupDetail: React.FC<PickupDetailProps> = ({ lockerId }) => {
   const { cabinetId } = useParams<{ cabinetId: string }>();
 
-
-  
-
-  // cabinetIdを元に、該当するボックスの詳細情報を取得する処理を追加
-  // 例えば、Axiosを使用してサーバーからデータを取得するなど
-
   // 仮のデータ
   const cabinetDetails = {
     id: cabinetId,
@@ -27,11 +21,17 @@ const PickupDetail: React.FC<PickupDetailProps> = ({ lockerId }) => {
     },
   };
 
+  // 扉を閉じるボタンがクリックされたときの処理
+  const handleCloseDoor = () => {
+    // ここに扉を閉じるための処理を追加
+    console.log('Door closed!');
+  };
+
   return (
     <div>
       <h2>Locker {lockerId}</h2>
       <h2>Pickup Cabinet {cabinetDetails.id} Details</h2>
-     {/*  <p>Size: {cabinetDetails.size}</p>
+      {/*  <p>Size: {cabinetDetails.size}</p>
       <p>Status: {cabinetDetails.status}</p> */}
       {cabinetDetails.parcel && (
         <div>
@@ -42,6 +42,8 @@ const PickupDetail: React.FC<PickupDetailProps> = ({ lockerId }) => {
           {/* 他のパーセルの詳細情報も表示できるように適宜追加 */}
         </div>
       )}
+      {/* 確認して扉を閉じるボタン */}
+      <button onClick={handleCloseDoor}>Confirm and Close Door</button>
     </div>
   );
 };
