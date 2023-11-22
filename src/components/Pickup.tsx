@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 interface Cabinet {
   id: number;
@@ -16,6 +17,7 @@ interface PickupProps {
 const Pickup: React.FC<PickupProps> = ({ lockerId }) => {
   const [cabinetStates, setCabinetStates] = useState<string[]>([]);
   const [cabinets, setCabinets] = useState<Cabinet[]>([]);
+  const [selectedCabinet, setSelectedCabinet] = useState<number | null>(null);
 
   const fetchCabinetStates = async () => {
     try {
@@ -34,7 +36,6 @@ const Pickup: React.FC<PickupProps> = ({ lockerId }) => {
     fetchCabinetStates();
   }, [lockerId]);
 
-  // Function to arrange cabinets in the specified format
   const arrangeCabinets = () => {
     const arrangedCabinets: JSX.Element[] = [];
 
@@ -47,26 +48,34 @@ const Pickup: React.FC<PickupProps> = ({ lockerId }) => {
       for (let colIndex = 0; colIndex < 5; colIndex++) {
         
         const isPickup = cabinetStates[cabinetCount - 1] === 'in-use' && cabinets[cabinetCount - 1]?.parcel !== null;
+        const isSelected = selectedCabinet === cabinetCount;
 
         arrangedCabinets.push(
-          <div
+          <Link
             key={cabinetCount}
-            style={{
-              position: 'relative',
-              width: '80px',
-              height: '80px',
-              border: '1px solid black',
-              textAlign: 'center',
-              backgroundColor: isPickup ? 'pink' : 'white',
-              color: 'black',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
+            to={`/pickup/${cabinetCount}`} //set cabinetCount as parameter
+            style={{ textDecoration: 'none' }}
           >
-            <div>{cabinetCount}</div>
-          </div>
+            <div
+              onClick={() => setSelectedCabinet(cabinetCount)}
+              style={{
+                position: 'relative',
+                width: '80px',
+                height: '80px',
+                border: '1px solid black',
+                textAlign: 'center',
+                backgroundColor: isSelected ? 'lightblue' : (isPickup ? 'pink' : 'white'),
+                color: 'black',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer', // mouseover
+              }}
+            >
+              <div>{cabinetCount}</div>
+            </div>
+          </Link>
         );
 
         // Increment the cabinet count
@@ -94,8 +103,7 @@ const Pickup: React.FC<PickupProps> = ({ lockerId }) => {
     <div>
       <h2>Locker {lockerId}</h2>
       <h2>Pickup Cabinets </h2>
-        {arrangeCabinets()}
-      
+      {arrangeCabinets()}
     </div>
   );
 };
