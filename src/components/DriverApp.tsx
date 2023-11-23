@@ -36,7 +36,7 @@ const ActiveParcelLockerSelector: React.FC<{ onSelect: (lockerId: string) => voi
 
   useEffect(() => {
     // one driver
-    axios.get('http://localhost:3000/api/lockers/nearest/21c4622e-31cc-4883-a9f4-b01b831343b1')
+    axios.get('http://localhost:3000/api/lockers/nearest/7c57fb0e-5477-49d7-b7c9-0da4f21a9799')
       .then((response) => {
         setNearestLockerId(response.data[0]?.locker_id || null);
         setActiveLockers(response.data.map((locker: any) => locker.locker_id));

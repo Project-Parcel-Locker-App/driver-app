@@ -8,20 +8,57 @@ interface DeliverDetailProps {
 const DeliverDetail: React.FC<DeliverDetailProps> = ({ lockerId }) => {
   const { cabinetId } = useParams<{ cabinetId: string }>();
 
-  // fake data
+  // Fake data for 7 parcels
   const cabinetDetails = {
     id: cabinetId,
     size: 'Medium',
     status: 'in-use',
-    parcel: {
-      id: '123',
-      sender: 'John Doe',
-      recipient: 'Jane Doe',
-      // other information
-    },
+    parcels: [
+      {
+        id: '123',
+        sender: 'John Doe',
+        recipient: 'Jane Doe',
+        // Additional Parcel Information
+      },
+      {
+        id: '124',
+        sender: 'Alice',
+        recipient: 'Bob',
+        // Additional Parcel Information
+      },
+      {
+        id: '125',
+        sender: 'Charlie',
+        recipient: 'David',
+        // Additional Parcel Information
+      },
+      {
+        id: '126',
+        sender: 'Eve',
+        recipient: 'Frank',
+        // Additional Parcel Information
+      },
+      {
+        id: '127',
+        sender: 'Grace',
+        recipient: 'Harry',
+        // Additional Parcel Information
+      },
+      {
+        id: '128',
+        sender: 'Ivy',
+        recipient: 'Jack',
+        // Additional Parcel Information
+      },
+      {
+        id: '129',
+        sender: 'Katherine',
+        recipient: 'Leo',
+        // Additional Parcel Information
+      },
+    ],
   };
 
-  
   const handleCloseDoor = () => {
     // add method to close door
     console.log('Door closed!');
@@ -31,17 +68,15 @@ const DeliverDetail: React.FC<DeliverDetailProps> = ({ lockerId }) => {
     <div>
       <h2>Locker {lockerId}</h2>
       <h2>Deliver Cabinet {cabinetDetails.id} Details</h2>
-      {/*  <p>Size: {cabinetDetails.size}</p>
-      <p>Status: {cabinetDetails.status}</p> */}
-      {cabinetDetails.parcel && (
-        <div>
-          <h3>Parcel Details</h3>
-          <p>ID: {cabinetDetails.parcel.id}</p>
-          <p>Sender: {cabinetDetails.parcel.sender}</p>
-          <p>Recipient: {cabinetDetails.parcel.recipient}</p>
-          {/* add additional info */}
+      {cabinetDetails.parcels && cabinetDetails.parcels.map((parcel, index) => (
+        <div key={index} style={{ borderBottom: '1px solid #ccc', padding: '16px 0' }}>
+          <h3>Parcel {index + 1} Details</h3>
+          <p>ID: {parcel.id}</p>
+          <p>Sender: {parcel.sender}</p>
+          <p>Recipient: {parcel.recipient}</p>
+          {/* Add additional info */}
         </div>
-      )}
+      ))}
 
       <button onClick={handleCloseDoor}>Confirm and Close Door</button>
     </div>
