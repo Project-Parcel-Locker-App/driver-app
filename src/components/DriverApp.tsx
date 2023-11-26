@@ -9,24 +9,45 @@ import DeliverDetail from './DeliverDetail';
 
 import '../App.css';
 
+
+
 const Header: React.FC = () => {
+  const containerStyle: React.CSSProperties = {
+    position: 'fixed',
+    top: '0',
+    left: '0',
+    width: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    background: '#870939',
+    color: 'white',
+    zIndex: '1000', 
+    padding: '15px', 
+    justifyContent: 'space-between', 
+  };
+
+  const linkStyle = { textDecoration: 'none', color: 'white', marginRight: '20px', letterSpacing: '2px' };
+
   return (
-    <div style={{ display: 'flex', alignItems: 'center' }}>
-      <Link to="/">
-        <h3 style={{ margin: '0', marginRight: '20px' }}>Driver App</h3>
+    <div style={containerStyle}>
+      <Link to="/" style={linkStyle}>
+        <h2 style={{ margin: '0' }}>Driver App</h2>
       </Link>
-      <Link to="/freeCabinets">
-        <button>Free Cabinets</button>
-      </Link>
-      <Link to="/pickup">
-        <button>Pickup</button>
-      </Link>
-      <Link to="/deliver">
-        <button>Deliver</button>
-      </Link>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <Link to="/freeCabinets" style={linkStyle}>
+          <h3>Free Cabinets</h3>
+        </Link>
+        <Link to="/pickup" style={linkStyle}>
+          <h3>Pickup</h3>
+        </Link>
+        <Link to="/deliver" style={linkStyle}>
+          <h3>Deliver</h3>
+        </Link>
+      </div>
     </div>
   );
 };
+
 
 
 const ActiveParcelLockerSelector: React.FC<{ onSelect: (lockerId: string) => void }> = ({ onSelect }) => {
@@ -55,17 +76,21 @@ const ActiveParcelLockerSelector: React.FC<{ onSelect: (lockerId: string) => voi
           .sort((a, b) => parseInt(a) - parseInt(b))
           .map((lockerId) => (
             <button
-              key={lockerId}
-              onClick={() => onSelect(lockerId)}
-              style={{
-                fontSize: lockerId === nearestLockerId ? '20px' : '14px',
-                marginRight: '10px',
-                padding: lockerId === nearestLockerId ? '15px' : '10px',
-                backgroundColor: lockerId === nearestLockerId ? 'yellow' : 'white',
-              }}
-            >
-              <Link to={`/locker/${lockerId}`}>Locker {lockerId}</Link>
-            </button>
+            key={lockerId}
+            onClick={() => onSelect(lockerId)}
+            style={{
+              fontSize: lockerId === nearestLockerId ? '20px' : '14px',
+              marginRight: '20px',
+              padding: lockerId === nearestLockerId ? '15px' : '10px',
+              backgroundColor: lockerId === nearestLockerId ?  '#870939' : '#BDBBBC', 
+              color: lockerId === nearestLockerId ? 'white' : 'black' ,
+            }}
+          >
+            <Link to={`/locker/${lockerId}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+              Locker {lockerId}
+            </Link>
+          </button>
+          
           ))}
       </div>
     </div>
