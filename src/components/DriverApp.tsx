@@ -129,17 +129,19 @@ const DriverApp: React.FC = () => {
             element={
               <div>
                 <h2>Select cabinets status</h2>
-                <div>
+                
+                <div style={{ display: 'flex', gap: '10px' }}>
                   <Link to="/freeCabinets">
-                  <button>Free Cabinets</button>
+                    <button style={{ backgroundColor: 'rgb(241, 226, 231)', padding: '20px', border: 'none', cursor: '#F1E2E7' }}>Free Cabinets</button>
                   </Link>
                   <Link to="/pickup">
-                  <button>Pickup</button>
+                    <button style={{ backgroundColor: 'rgb(241, 226, 231)', padding: '20px', border: 'none', cursor: 'pointer' }}>Pickup</button>
                   </Link>
                   <Link to="/deliver">
-                  <button>Deliver</button>
+                    <button style={{ backgroundColor: 'rgb(241, 226, 231)', padding: '20px', border: 'none', cursor: 'pointer' }}>Deliver</button>
                   </Link>
                 </div>
+
                 <Outlet />
               </div>
             }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 
 interface Parcel {
@@ -23,8 +23,9 @@ const DeliverDetail: React.FC<DeliverDetailProps> = ({ lockerId }) => {
   const { cabinetId } = useParams<{ cabinetId?: string }>();
   const [selectedParcel, setSelectedParcel] = useState<Parcel | null>(null);
   const [doorClosed, setDoorClosed] = useState(false);
+  const selectedParcelRef = useRef<HTMLDivElement>(null);
 
-  // cabinetId が undefined の場合にデフォルトの値を設定する
+  
   const cabinetDetails: CabinetDetails = {
     id: cabinetId || 'defaultCabinetId',
     size: 'Medium',
@@ -77,6 +78,11 @@ const DeliverDetail: React.FC<DeliverDetailProps> = ({ lockerId }) => {
 
   const handleParcelSelection = (selectedParcel: Parcel) => {
     setSelectedParcel(selectedParcel);
+
+ 
+    if (selectedParcelRef.current) {
+      selectedParcelRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   };
 
   const handleCloseDoor = () => {
@@ -87,7 +93,7 @@ const DeliverDetail: React.FC<DeliverDetailProps> = ({ lockerId }) => {
   return (
     <div>
       <h2>Locker {lockerId}</h2>
-      <h2>Deliver Cabinet {cabinetDetails.id} Details</h2>
+      <h2>Select the parcel to cabinet {cabinetDetails.id} </h2>
 
       {cabinetDetails.parcels.map((parcel, index) => (
         <div key={index} style={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #ccc', padding: '16px 0', backgroundColor: selectedParcel === parcel ? '#eee' : 'inherit' }}>
@@ -100,17 +106,24 @@ const DeliverDetail: React.FC<DeliverDetailProps> = ({ lockerId }) => {
           <button onClick={() => handleParcelSelection(parcel)}>Select</button>
         </div>
       ))}
+{selectedParcel && !doorClosed && (
+  <div
+    ref={selectedParcelRef}
+    style={{
+      backgroundColor: '#F1E2E7',
+      padding: '20px', 
+      width: '300px',
+      height: '550px', 
+    }}
+  >
+    <h3>Selected Parcel Details to Cabinet {cabinetDetails.id} </h3>
+    <p>ID: {selectedParcel.id}</p>
+    <p>Sender: {selectedParcel.sender}</p>
+    <p>Recipient: {selectedParcel.recipient}</p>
+  </div>
+)}
 
-      {selectedParcel && !doorClosed && (
-        <div>
-          <h3>Selected Parcel Details</h3>
-          <p>ID: {selectedParcel.id}</p>
-          <p>Sender: {selectedParcel.sender}</p>
-          <p>Recipient: {selectedParcel.recipient}</p>
-        </div>
-      )}
-
-      {!doorClosed && <button onClick={handleCloseDoor}>Confirm and Close Door</button>}
+      {!doorClosed && <button onClick={handleCloseDoor} style={{ background: '#870939',color: 'white', padding: '20px', marginTop: '30px',alignItems: 'center',}}>Confirm and Close Door</button>}
     </div>
   );
 };
