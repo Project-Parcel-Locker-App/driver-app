@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+//import { Link } from 'react-router-dom';
 
 interface Cabinet {
   id: number;
   locker_id: number;
   cabinet_size: string;
   cabinet_status: string;
-  parcel: any; // Replace 'any' with the actual type of 'parcel'
+  parcel: {
+    id: number;
+    parcel_status: string;
+  } | null;
 }
 
 interface PickupProps {
@@ -15,18 +18,16 @@ interface PickupProps {
 }
 
 const Pickup: React.FC<PickupProps> = ({ lockerId }) => {
-  const [cabinetStates, setCabinetStates] = useState<string[]>([]);
-  const [cabinets, setCabinets] = useState<Cabinet[]>([]);
-  const [selectedCabinet, setSelectedCabinet] = useState<number | null>(null);
+  const [fetchedCabinets, setFetchedCabinets] = useState<Cabinet[]>([]);
+  const [selectedParcelId, setSelectedParcelId] = useState<number | null>(null);
 
   const fetchCabinetStates = async () => {
     try {
       const response = await axios.get(`http://localhost:3000/api/lockers/${lockerId}`);
+      
       const fetchedCabinets: Cabinet[] = response.data.cabinets || [];
-      const cabinetStatusArray = fetchedCabinets.map((cabinet) => cabinet.cabinet_status);
-      console.log('cabinetStatusArray:', cabinetStatusArray);
-      setCabinetStates(cabinetStatusArray);
-      setCabinets(fetchedCabinets);
+            
+      setFetchedCabinets(fetchedCabinets);
     } catch (error) {
       console.error('Error fetching cabinet states:', error);
     }
@@ -35,6 +36,42 @@ const Pickup: React.FC<PickupProps> = ({ lockerId }) => {
   useEffect(() => {
     fetchCabinetStates();
   }, [lockerId]);
+
+  const handleCabinetClick = (parcelId: number | null) => {
+    setSelectedParcelId(parcelId);
+  };
+
+/* 
+  const handleConfirmAndPickup = async () => {
+    if (selectedParcelId !== null) {
+      try {
+        // サーバーサイドのエンドポイントにリクエストを送信
+        const response = await axios.post('http://localhost:3000/api/changeParcelStatus', {
+          parcelId: selectedParcelId,
+          newStatus: 'delivered', // 変更後のステータス
+        });
+
+        console.log(response.data); // サーバーサイドからの応答
+
+        // ステータスが変更されたら、必要に応じてクライアント側の表示を更新するなどの処理を追加
+      } catch (error) {
+        console.error('Error confirming and picking up:', error);
+      }
+    } else {
+      console.warn('No parcel selected.');
+    }
+  };
+
+ */
+  const handleConfirmAndPickup = () => {
+    // Implement the logic for confirming and picking up the selected parcel
+    if (selectedParcelId !== null) {
+      // Add your confirmation and pickup logic here
+      console.log(`Confirmed and Picked up Parcel ID: ${selectedParcelId}`);
+    } else {
+      console.warn('No parcel selected.');
+    }
+  };
 
   const arrangeCabinets = () => {
     const arrangedCabinets: JSX.Element[] = [];
@@ -46,36 +83,31 @@ const Pickup: React.FC<PickupProps> = ({ lockerId }) => {
     for (let rowIndex = 0; rowIndex < 3; rowIndex++) {
       // Loop through each cabinet in the row
       for (let colIndex = 0; colIndex < 5; colIndex++) {
-        
-        const isPickup = cabinetStates[cabinetCount - 1] === 'in-use' && cabinets[cabinetCount - 1]?.parcel !== null;
-        const isSelected = selectedCabinet === cabinetCount;
+        const cabinet = fetchedCabinets[cabinetCount - 1];
+        const parcelId = cabinet?.parcel?.id || null;
+        const isInTransit = cabinet?.parcel?.parcel_status === 'in-transit';
 
         arrangedCabinets.push(
-          <Link
+          <div
             key={cabinetCount}
-            to={`/pickup/${cabinetCount}`} //set cabinetCount as parameter
-            style={{ textDecoration: 'none' }}
+            style={{
+              position: 'relative',
+              width: '80px',
+              height: '80px',
+              border: '1px solid black',
+              textAlign: 'center',
+              backgroundColor: isInTransit ? 'yellow' : 'white',
+              color: 'black',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer', // mouseover
+            }}
+            onClick={() => handleCabinetClick(parcelId)}
           >
-            <div
-              onClick={() => setSelectedCabinet(cabinetCount)}
-              style={{
-                position: 'relative',
-                width: '80px',
-                height: '80px',
-                border: '1px solid black',
-                textAlign: 'center',
-                backgroundColor: isSelected ? 'lightblue' : (isPickup ? 'pink' : 'white'),
-                color: 'black',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer', // mouseover
-              }}
-            >
-              <div>{cabinetCount}</div>
-            </div>
-          </Link>
+            <div>{cabinetCount}</div>
+          </div>
         );
 
         // Increment the cabinet count
@@ -104,6 +136,12 @@ const Pickup: React.FC<PickupProps> = ({ lockerId }) => {
       <h2>Locker {lockerId}</h2>
       <h2>Pickup Cabinets </h2>
       {arrangeCabinets()}
+      {selectedParcelId !== null && (
+        <div>
+          <p>Selected Parcel ID: {selectedParcelId}</p>
+          <button onClick={handleConfirmAndPickup}>Confirm and Pickup</button>
+        </div>
+      )}
     </div>
   );
 };

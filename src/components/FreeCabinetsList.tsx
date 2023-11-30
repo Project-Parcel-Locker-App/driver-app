@@ -15,16 +15,22 @@ interface FreeProps {
 
 const Free: React.FC<FreeProps> = ({ lockerId }) => {
   const [cabinetStates, setCabinetStates] = useState<string[]>([]);
-  const [cabinets, setCabinets] = useState<Cabinet[]>([]);
+  // cabinetsは削除しない
+  // const [cabinets, setCabinets] = useState<Cabinet[]>([]);
 
   const fetchCabinetStates = async () => {
     try {
       const response = await axios.get(`http://localhost:3000/api/lockers/${lockerId}`);
+      
       const fetchedCabinets: Cabinet[] = response.data.cabinets || [];
-      const cabinetStatusArray = fetchedCabinets.map((cabinet) => cabinet.cabinet_status);
+      
+      // Map to extract parcel information
+      const cabinetStatusArray = fetchedCabinets.map((cabinet) => (cabinet.parcel !== null ? cabinet.parcel : null));
+      
       console.log('cabinetStatusArray:', cabinetStatusArray);
+            
       setCabinetStates(cabinetStatusArray);
-      setCabinets(fetchedCabinets);
+      // setCabinets(filteredCabinets);
     } catch (error) {
       console.error('Error fetching cabinet states:', error);
     }
@@ -46,7 +52,8 @@ const Free: React.FC<FreeProps> = ({ lockerId }) => {
     for (let rowIndex = 0; rowIndex < 3; rowIndex++) {
       // Loop through each cabinet in the row
       for (let colIndex = 0; colIndex < 5; colIndex++) {
-        const isFree = cabinetStates[cabinetCount - 1] === 'available' && cabinets[cabinetCount - 1]?.parcel == null;
+        // Updated to use cabinetStates directly to check if the cabinet is null
+        const isFree = cabinetStates[cabinetCount - 1] === null;
 
         arrangedCabinets.push(
           <div

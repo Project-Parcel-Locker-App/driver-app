@@ -9,7 +9,8 @@ import DeliverDetail from './DeliverDetail';
 
 import '../App.css';
 
-
+//import dotenv from 'dotenv';
+//dotenv.config();
 
 const Header: React.FC = () => {
   const containerStyle: React.CSSProperties = {
@@ -21,9 +22,9 @@ const Header: React.FC = () => {
     alignItems: 'center',
     background: '#870939',
     color: 'white',
-    zIndex: '1000', 
-    padding: '15px', 
-    justifyContent: 'space-between', 
+    zIndex: '1000',
+    padding: '15px',
+    justifyContent: 'space-between',
   };
 
   const linkStyle = { textDecoration: 'none', color: 'white', marginRight: '20px', letterSpacing: '2px' };
@@ -48,16 +49,15 @@ const Header: React.FC = () => {
   );
 };
 
-
-
 const ActiveParcelLockerSelector: React.FC<{ onSelect: (lockerId: string) => void }> = ({ onSelect }) => {
   const [activeLockers, setActiveLockers] = useState<string[]>([]);
   const [nearestLockerId, setNearestLockerId] = useState<string | null>(null);
 
-
   useEffect(() => {
     // one driver
-    axios.get('http://localhost:3000/api/lockers/nearest/7c57fb0e-5477-49d7-b7c9-0da4f21a9799')
+    axios
+      //.get(`${import.meta.env.REACT_APP_API_BASE_URL}/api/lockers/nearest/7c57fb0e-5477-49d7-b7c9-0da4f21a9799`)
+      .get(`http://localhost:3000/api/lockers/nearest/7c57fb0e-5477-49d7-b7c9-0da4f21a9799`)
       .then((response) => {
         setNearestLockerId(response.data[0]?.locker_id || null);
         setActiveLockers(response.data.map((locker: any) => locker.locker_id));
@@ -76,21 +76,20 @@ const ActiveParcelLockerSelector: React.FC<{ onSelect: (lockerId: string) => voi
           .sort((a, b) => parseInt(a) - parseInt(b))
           .map((lockerId) => (
             <button
-            key={lockerId}
-            onClick={() => onSelect(lockerId)}
-            style={{
-              fontSize: lockerId === nearestLockerId ? '20px' : '14px',
-              marginRight: '20px',
-              padding: lockerId === nearestLockerId ? '15px' : '10px',
-              backgroundColor: lockerId === nearestLockerId ?  '#870939' : '#BDBBBC', 
-              color: lockerId === nearestLockerId ? 'white' : 'black' ,
-            }}
-          >
-            <Link to={`/locker/${lockerId}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-              Locker {lockerId}
-            </Link>
-          </button>
-          
+              key={lockerId}
+              onClick={() => onSelect(lockerId)}
+              style={{
+                fontSize: lockerId === nearestLockerId ? '20px' : '14px',
+                marginRight: '20px',
+                padding: lockerId === nearestLockerId ? '15px' : '10px',
+                backgroundColor: lockerId === nearestLockerId ? '#870939' : '#BDBBBC',
+                color: lockerId === nearestLockerId ? 'white' : 'black',
+              }}
+            >
+              <Link to={`/locker/${lockerId}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                Locker {lockerId}
+              </Link>
+            </button>
           ))}
       </div>
     </div>
@@ -100,7 +99,6 @@ const ActiveParcelLockerSelector: React.FC<{ onSelect: (lockerId: string) => voi
 const DriverApp: React.FC = () => {
   const [selectedLocker, setSelectedLocker] = useState<string | null>(null);
 
-  
   const handleLockerSelect = (lockerId: string) => {
     setSelectedLocker(lockerId);
   };
@@ -108,10 +106,8 @@ const DriverApp: React.FC = () => {
   return (
     <Router>
       <div>
-
         {/* ヘッダー */}
         <Header />
-       
 
         {/* ロッカー選択画面 */}
         <Routes>
@@ -129,7 +125,7 @@ const DriverApp: React.FC = () => {
             element={
               <div>
                 <h2>Select cabinets status</h2>
-                
+
                 <div style={{ display: 'flex', gap: '10px' }}>
                   <Link to="/freeCabinets">
                     <button style={{ backgroundColor: 'rgb(241, 226, 231)', padding: '20px', border: 'none', cursor: '#F1E2E7' }}>Free Cabinets</button>
@@ -146,24 +142,15 @@ const DriverApp: React.FC = () => {
               </div>
             }
           />
-          
-         <Route
+          <Route
             path="/pickup/:cabinetId"
             element={<PickupDetail lockerId={selectedLocker || ''} />}
           />
-
-
-         <Route
+          <Route
             path="/deliver/:cabinetId"
             element={<DeliverDetail lockerId={selectedLocker || ''} />}
           />
-
-
-
-
         </Routes>
-
-      
 
         {/* 各ビュー */}
         <Routes>
@@ -171,9 +158,6 @@ const DriverApp: React.FC = () => {
           <Route path="/pickup" element={<Pickup lockerId={selectedLocker || ''} />} />
           <Route path="/deliver" element={<Deliver lockerId={selectedLocker || ''} />} />
         </Routes>
-
-          
-
       </div>
     </Router>
   );
