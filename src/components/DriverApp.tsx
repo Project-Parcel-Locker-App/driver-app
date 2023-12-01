@@ -56,15 +56,15 @@ const ActiveParcelLockerSelector: React.FC<{ onSelect: (lockerId: string) => voi
   useEffect(() => {
     // one driver
     axios
-      //.get(`${import.meta.env.REACT_APP_API_BASE_URL}/api/lockers/nearest/7c57fb0e-5477-49d7-b7c9-0da4f21a9799`)
-      .get(`http://localhost:3000/api/lockers/nearest/7c57fb0e-5477-49d7-b7c9-0da4f21a9799`)
-      .then((response) => {
-        setNearestLockerId(response.data[0]?.locker_id || null);
-        setActiveLockers(response.data.map((locker: any) => locker.locker_id));
-      })
-      .catch((error) => {
-        console.error('Error fetching active lockers:', error);
-      });
+    .get(`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/lockers/nearest/7c57fb0e-5477-49d7-b7c9-0da4f21a9799`)
+    .then((response) => {
+      setNearestLockerId(response.data[0]?.locker_id || null);
+      setActiveLockers(response.data.map((locker: any) => locker.locker_id));
+    })
+    .catch((error) => {
+      console.error('Error fetching active lockers:', error);
+    });
+  
   }, []); // Empty dependency array to ensure the effect runs only once
 
   return (

@@ -41,19 +41,26 @@ const Pickup: React.FC<PickupProps> = ({ lockerId }) => {
     setSelectedParcelId(parcelId);
   };
 
-/* 
   const handleConfirmAndPickup = async () => {
     if (selectedParcelId !== null) {
       try {
-        // サーバーサイドのエンドポイントにリクエストを送信
-        const response = await axios.post('http://localhost:3000/api/changeParcelStatus', {
-          parcelId: selectedParcelId,
-          newStatus: 'delivered', // 変更後のステータス
-        });
-
-        console.log(response.data); // サーバーサイドからの応答
-
-        // ステータスが変更されたら、必要に応じてクライアント側の表示を更新するなどの処理を追加
+        // Add appropriate authentication information (e.g., a token)
+        const authToken = 'your_auth_token'; // Replace with your actual token
+        const response = await axios.post(
+          'http://localhost:3000/api/parcels/update',
+          {
+            parcelId: selectedParcelId,
+            status: 'delivered', 
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${authToken}`,
+            },
+          }
+        );
+  
+        console.log(response.data); 
+       
       } catch (error) {
         console.error('Error confirming and picking up:', error);
       }
@@ -61,8 +68,9 @@ const Pickup: React.FC<PickupProps> = ({ lockerId }) => {
       console.warn('No parcel selected.');
     }
   };
+  
 
- */
+ /* 
   const handleConfirmAndPickup = () => {
     // Implement the logic for confirming and picking up the selected parcel
     if (selectedParcelId !== null) {
@@ -71,7 +79,7 @@ const Pickup: React.FC<PickupProps> = ({ lockerId }) => {
     } else {
       console.warn('No parcel selected.');
     }
-  };
+  }; */
 
   const arrangeCabinets = () => {
     const arrangedCabinets: JSX.Element[] = [];
