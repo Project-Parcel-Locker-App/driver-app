@@ -9,9 +9,6 @@ import DeliverDetail from './DeliverDetail';
 
 import '../App.css';
 
-//import dotenv from 'dotenv';
-//dotenv.config();
-
 const Header: React.FC = () => {
   const containerStyle: React.CSSProperties = {
     position: 'fixed',
@@ -56,21 +53,19 @@ const ActiveParcelLockerSelector: React.FC<{ onSelect: (lockerId: string) => voi
   useEffect(() => {
     // one driver
     axios
-    .get(`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/lockers/nearest/7c57fb0e-5477-49d7-b7c9-0da4f21a9799`)
-    .then((response) => {
-      setNearestLockerId(response.data[0]?.locker_id || null);
-      setActiveLockers(response.data.map((locker: any) => locker.locker_id));
-    })
-    .catch((error) => {
-      console.error('Error fetching active lockers:', error);
-    });
-  
+      .get(`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/lockers/nearest/7c57fb0e-5477-49d7-b7c9-0da4f21a9799`)
+      .then((response) => {
+        setNearestLockerId(response.data[0]?.locker_id || null);
+        setActiveLockers(response.data.map((locker: any) => locker.locker_id));
+      })
+      .catch((error) => {
+        console.error('Error fetching active lockers:', error);
+      });
   }, []); // Empty dependency array to ensure the effect runs only once
 
   return (
     <div>
       <h2>Select Active Parcel Locker</h2>
-      {/* display botton according to locker id */}
       <div style={{ display: 'flex' }}>
         {activeLockers
           .sort((a, b) => parseInt(a) - parseInt(b))
@@ -106,10 +101,7 @@ const DriverApp: React.FC = () => {
   return (
     <Router>
       <div>
-        {/* ヘッダー */}
         <Header />
-
-        {/* ロッカー選択画面 */}
         <Routes>
           <Route
             path="/"
@@ -125,7 +117,6 @@ const DriverApp: React.FC = () => {
             element={
               <div>
                 <h2>Select cabinets status</h2>
-
                 <div style={{ display: 'flex', gap: '10px' }}>
                   <Link to="/freeCabinets">
                     <button style={{ backgroundColor: 'rgb(241, 226, 231)', padding: '20px', border: 'none', cursor: '#F1E2E7' }}>Free Cabinets</button>
@@ -137,23 +128,12 @@ const DriverApp: React.FC = () => {
                     <button style={{ backgroundColor: 'rgb(241, 226, 231)', padding: '20px', border: 'none', cursor: 'pointer' }}>Deliver</button>
                   </Link>
                 </div>
-
                 <Outlet />
               </div>
             }
           />
-          <Route
-            path="/pickup/:cabinetId"
-            element={<PickupDetail lockerId={selectedLocker || ''} />}
-          />
-          <Route
-            path="/deliver/:cabinetId"
-            element={<DeliverDetail lockerId={selectedLocker || ''} />}
-          />
-        </Routes>
-
-        {/* 各ビュー */}
-        <Routes>
+          <Route path="/pickup/:cabinetId" element={<PickupDetail lockerId={selectedLocker || ''} />} />
+          <Route path="/deliver/:cabinetId" element={<DeliverDetail lockerId={selectedLocker || ''} />} />
           <Route path="/freeCabinets" element={<FreeCabinetsList lockerId={selectedLocker || ''} />} />
           <Route path="/pickup" element={<Pickup lockerId={selectedLocker || ''} />} />
           <Route path="/deliver" element={<Deliver lockerId={selectedLocker || ''} />} />
