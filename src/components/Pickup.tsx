@@ -23,7 +23,8 @@ const Pickup: React.FC<PickupProps> = ({ lockerId }) => {
 
   const fetchCabinetStates = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/api/lockers/${lockerId}`);
+      const response = await axios.get(`http://localhost:3000/api/lockers/${lockerId}/cabinets`);
+      //const response = await axios.get(`http://localhost:3000/api/lockers/${lockerId}`);
       
       const fetchedCabinets: Cabinet[] = response.data.cabinets || [];
             
@@ -104,7 +105,7 @@ const Pickup: React.FC<PickupProps> = ({ lockerId }) => {
               height: '80px',
               border: '1px solid black',
               textAlign: 'center',
-              backgroundColor: isInTransit ? 'yellow' : 'white',
+              backgroundColor: isInTransit ? '#FFD500' : 'white',
               color: 'black',
               display: 'flex',
               flexDirection: 'column',

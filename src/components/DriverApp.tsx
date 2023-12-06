@@ -6,6 +6,7 @@ import Pickup from './Pickup';
 import Deliver from './Deliver';
 import PickupDetail from './PickupDetail';
 import DeliverDetail from './DeliverDetail';
+import LoginForm from './LoginForm';
 
 import '../App.css';
 
@@ -47,16 +48,20 @@ const Header: React.FC = () => {
 };
 
 const ActiveParcelLockerSelector: React.FC<{ onSelect: (lockerId: string) => void }> = ({ onSelect }) => {
+  
   const [activeLockers, setActiveLockers] = useState<string[]>([]);
   const [nearestLockerId, setNearestLockerId] = useState<string | null>(null);
 
   useEffect(() => {
     // one driver
     axios
-      .get(`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/lockers/nearest/7c57fb0e-5477-49d7-b7c9-0da4f21a9799`)
+     
+      .get(`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/users/9a543290-977a-4434-bb93-036f314dd2df/nearby-lockers`)
       .then((response) => {
+        console.log('Active lockers response:', response.data);
         setNearestLockerId(response.data[0]?.locker_id || null);
         setActiveLockers(response.data.map((locker: any) => locker.locker_id));
+        console.log('Active lockers:', activeLockers);
       })
       .catch((error) => {
         console.error('Error fetching active lockers:', error);
@@ -96,6 +101,7 @@ const DriverApp: React.FC = () => {
 
   const handleLockerSelect = (lockerId: string) => {
     setSelectedLocker(lockerId);
+    console.log('Selected Locker ID:', lockerId);
   };
 
   return (
@@ -103,6 +109,10 @@ const DriverApp: React.FC = () => {
       <div>
         <Header />
         <Routes>
+          <Route
+            path="/login"
+            element={<LoginForm />}
+          />
           <Route
             path="/"
             element={
@@ -134,6 +144,9 @@ const DriverApp: React.FC = () => {
           />
           <Route path="/pickup/:cabinetId" element={<PickupDetail lockerId={selectedLocker || ''} />} />
           <Route path="/deliver/:cabinetId" element={<DeliverDetail lockerId={selectedLocker || ''} />} />
+
+
+
           <Route path="/freeCabinets" element={<FreeCabinetsList lockerId={selectedLocker || ''} />} />
           <Route path="/pickup" element={<Pickup lockerId={selectedLocker || ''} />} />
           <Route path="/deliver" element={<Deliver lockerId={selectedLocker || ''} />} />

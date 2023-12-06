@@ -21,10 +21,12 @@ const Deliver: React.FC<DeliverProps> = ({ lockerId }) => {
 
   const fetchCabinetStates = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/api/lockers/${lockerId}`);
+      const response = await axios.get(`http://localhost:3000/api/lockers/${lockerId}/cabinets`);
+      
+      //const response = await axios.get(`http://localhost:3000/api/lockers/${lockerId}`);
       const fetchedCabinets: Cabinet[] = response.data.cabinets || [];
-      const cabinetStatusArray = fetchedCabinets.map((cabinet) => cabinet.cabinet_status);
-      console.log('cabinetStatusArray:', cabinetStatusArray);
+      const cabinetStatusArray = fetchedCabinets.map((cabinets) => cabinets.parcel);
+      console.log('cabinetDeliverStatusArray:', cabinetStatusArray);
       setCabinetStates(cabinetStatusArray);
       setCabinets(fetchedCabinets);
     } catch (error) {
@@ -48,7 +50,7 @@ const Deliver: React.FC<DeliverProps> = ({ lockerId }) => {
       // Loop through each cabinet in the row
       for (let colIndex = 0; colIndex < 5; colIndex++) {
 
-        const isDeliver = cabinetStates[cabinetCount - 1] === 'available' && cabinets[cabinetCount - 1]?.parcel == null;
+        const isDeliver = cabinetStates[cabinetCount - 1]  == null;
 
         arrangedCabinets.push(
           <Link
@@ -64,7 +66,7 @@ const Deliver: React.FC<DeliverProps> = ({ lockerId }) => {
               height: '80px',
               border: '1px solid black',
               textAlign: 'center',
-              backgroundColor: isDeliver ? 'yellow' : 'white',
+              backgroundColor: isDeliver ? '#1A659E' : 'white',
               color: 'black',
               display: 'flex',
               flexDirection: 'column',

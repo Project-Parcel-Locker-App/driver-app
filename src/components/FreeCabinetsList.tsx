@@ -15,12 +15,13 @@ interface FreeProps {
 
 const Free: React.FC<FreeProps> = ({ lockerId }) => {
   const [cabinetStates, setCabinetStates] = useState<string[]>([]);
-  // cabinetsは削除しない
+  
   // const [cabinets, setCabinets] = useState<Cabinet[]>([]);
 
   const fetchCabinetStates = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/api/lockers/${lockerId}`);
+      //console.log('lockerId に対するキャビネットを取得中:', lockerId);
+      const response = await axios.get(`http://localhost:3000/api/lockers/${lockerId}/cabinets`);
       
       const fetchedCabinets: Cabinet[] = response.data.cabinets || [];
       
@@ -28,6 +29,7 @@ const Free: React.FC<FreeProps> = ({ lockerId }) => {
       const cabinetStatusArray = fetchedCabinets.map((cabinet) => (cabinet.parcel !== null ? cabinet.parcel : null));
       
       console.log('cabinetStatusArray:', cabinetStatusArray);
+      console.log('fetchCabinetStates - lockerId:', lockerId);
             
       setCabinetStates(cabinetStatusArray);
       // setCabinets(filteredCabinets);
@@ -39,6 +41,7 @@ const Free: React.FC<FreeProps> = ({ lockerId }) => {
   useEffect(() => {
     // Fetch cabinet states from the backend
     fetchCabinetStates();
+    
   }, [lockerId]);
 
   // Function to arrange cabinets in the specified format
@@ -64,7 +67,8 @@ const Free: React.FC<FreeProps> = ({ lockerId }) => {
               height: '80px',
               border: '1px solid black',
               textAlign: 'center',
-              backgroundColor: isFree ? 'green' : 'white',
+              // If the cabinet is free, set the background color to green
+              backgroundColor: isFree ? '#23856D ' : 'white',
               color: 'black',
               display: 'flex',
               flexDirection: 'column',
