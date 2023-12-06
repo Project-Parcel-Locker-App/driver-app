@@ -51,10 +51,10 @@ const LoginForm = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
       <div style={{ marginBottom: '10px', textAlign: 'left', width: '300px' }}>
-        <label style={{ marginBottom: '2px', color: '#870939', display: 'block' }}>Username</label>
+        <label style={{ marginBottom: '2px', color: '#870939', display: 'block' }}>Username/Email</label>
         <input
           type="text"
-          placeholder="Enter Your Username"
+          placeholder="Enter Your Username/Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           style={inputStyle}

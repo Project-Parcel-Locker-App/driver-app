@@ -67,7 +67,6 @@ const Free: React.FC<FreeProps> = ({ lockerId }) => {
               height: '80px',
               border: '1px solid black',
               textAlign: 'center',
-              // If the cabinet is free, set the background color to green
               backgroundColor: isFree ? '#23856D ' : 'white',
               color: 'black',
               display: 'flex',

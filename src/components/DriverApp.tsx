@@ -47,20 +47,20 @@ const Header: React.FC = () => {
   );
 };
 
-const ActiveParcelLockerSelector: React.FC<{ onSelect: (lockerId: string) => void }> = ({ onSelect }) => {
-  
-  const [activeLockers, setActiveLockers] = useState<string[]>([]);
+// ... 他の import 文
+
+const ActiveParcelLockerSelector: React.FC<{ onSelect: (lockerId: string, street: string) => void }> = ({ onSelect }) => {
+  const [activeLockers, setActiveLockers] = useState<{ locker_id: string; street: string }[]>([]);
   const [nearestLockerId, setNearestLockerId] = useState<string | null>(null);
 
   useEffect(() => {
     // one driver
     axios
-     
       .get(`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/users/9a543290-977a-4434-bb93-036f314dd2df/nearby-lockers`)
       .then((response) => {
         console.log('Active lockers response:', response.data);
         setNearestLockerId(response.data[0]?.locker_id || null);
-        setActiveLockers(response.data.map((locker: any) => locker.locker_id));
+        setActiveLockers(response.data.map((locker: any) => ({ locker_id: locker.locker_id, street: locker.street })));
         console.log('Active lockers:', activeLockers);
       })
       .catch((error) => {
@@ -71,23 +71,28 @@ const ActiveParcelLockerSelector: React.FC<{ onSelect: (lockerId: string) => voi
   return (
     <div>
       <h2>Select Active Parcel Locker</h2>
-      <div style={{ display: 'flex' }}>
+      <div style={{ display: 'flex' , flexDirection: 'column'}}>
         {activeLockers
-          .sort((a, b) => parseInt(a) - parseInt(b))
-          .map((lockerId) => (
+          .sort((a, b) => parseInt(a.locker_id) - parseInt(b.locker_id))
+          .map(({ locker_id, street }) => (
             <button
-              key={lockerId}
-              onClick={() => onSelect(lockerId)}
+              key={locker_id}
+              onClick={() => onSelect(locker_id, street)}
               style={{
-                fontSize: lockerId === nearestLockerId ? '20px' : '14px',
+                fontSize: locker_id === nearestLockerId ? '20px' : '14px',
                 marginRight: '20px',
-                padding: lockerId === nearestLockerId ? '15px' : '10px',
-                backgroundColor: lockerId === nearestLockerId ? '#870939' : '#BDBBBC',
-                color: lockerId === nearestLockerId ? 'white' : 'black',
+                marginTop: '20px',
+                marginBottom: '10px',  
+                padding: locker_id === nearestLockerId ? '15px' : '10px',
+                backgroundColor: locker_id === nearestLockerId ? '#870939' : '#BDBBBC',
+                color: locker_id === nearestLockerId ? 'white' : 'black',
+                whiteSpace: 'pre-line',
+                width: '100%', 
               }}
             >
-              <Link to={`/locker/${lockerId}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                Locker {lockerId}
+              <Link to={`/locker/${locker_id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                <div>Locker {locker_id}</div>
+                <div>{street}</div>
               </Link>
             </button>
           ))}
@@ -95,6 +100,9 @@ const ActiveParcelLockerSelector: React.FC<{ onSelect: (lockerId: string) => voi
     </div>
   );
 };
+
+// ... 他のコンポーネントやルーティングの部分
+
 
 const DriverApp: React.FC = () => {
   const [selectedLocker, setSelectedLocker] = useState<string | null>(null);
@@ -144,9 +152,6 @@ const DriverApp: React.FC = () => {
           />
           <Route path="/pickup/:cabinetId" element={<PickupDetail lockerId={selectedLocker || ''} />} />
           <Route path="/deliver/:cabinetId" element={<DeliverDetail lockerId={selectedLocker || ''} />} />
-
-
-
           <Route path="/freeCabinets" element={<FreeCabinetsList lockerId={selectedLocker || ''} />} />
           <Route path="/pickup" element={<Pickup lockerId={selectedLocker || ''} />} />
           <Route path="/deliver" element={<Deliver lockerId={selectedLocker || ''} />} />
