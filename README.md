@@ -1,27 +1,61 @@
-# React + TypeScript + Vite
+# Parcel Delivery Driver App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This application is part of the Advanced Web Applications Project (DIN22SP) for creating a packet receiving and sending application. The focus of this app is to facilitate the workflow for delivery truck drivers interacting with the automated parcel delivery point/locker system.
 
-Currently, two official plugins are available:
+## Table of Contents
+- [Introduction](#introduction)
+- [Features](#features)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Configuration](#configuration)
+- [Contributing](#contributing)
+- [License](#license)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Introduction
 
-## Expanding the ESLint configuration
+The Parcel Delivery Driver App is designed to assist delivery truck drivers in managing parcel pickups and deliveries at various parcel locker locations. It provides a user-friendly interface for drivers to interact with the system.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Features
 
-- Configure the top-level `parserOptions` property like this:
+1. **Select Active Parcel Locker**
+   - The driver can choose the parcel locker they want to interact with.
 
-```js
-   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-   },
-```
+2. **Free Cabinets**
+   - View available cabinets at the selected parcel locker.
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+3. **Parcel Pickup**
+   - Display cabinets with parcels ready for pickup.
+   - Mark parcels as picked up and free the corresponding cabinet.
+
+4. **Parcel Delivery to Parcel Locker**
+   - Choose a parcel from the undelivered parcels list.
+   - Update parcel and cabinet status to reserved.
+   - Notify the recipient that a new parcel is ready for pickup.
+
+
+## Requirements
+
+- Framework: React 
+- Language: TypeScript
+- Build Tool: Vite  
+- Routing: React Router Dom    
+- HTTP Requests: Axios  
+
+## Installation
+
+# Login
+username:
+klaus.schmid@driver.com
+
+Password:
+password1234
+
+
+1. Clone the repository:
+
+   ```bash
+   git clone <repository-url>
+   cd parcel-delivery-driver-app
+
+
