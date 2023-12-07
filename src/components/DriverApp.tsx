@@ -15,7 +15,7 @@ const ActiveParcelLockerSelector: React.FC<{ onSelect: (lockerId: string, street
   const [activeLockers, setActiveLockers] = useState<{ locker_id: string; street: string }[]>([]);
   const [nearestLockerId, setNearestLockerId] = useState<string | null>(null);
   
-
+/* 
   useEffect(() => {
     // one driver
     axios
@@ -30,6 +30,51 @@ const ActiveParcelLockerSelector: React.FC<{ onSelect: (lockerId: string, street
         console.error('Error fetching active lockers:', error);
       });
   }, []); // Empty dependency array to ensure the effect runs only once
+ */
+
+  const getAccessTokenFromCookie = () => {
+    const cookies = document.cookie.split(';');
+    for (const cookie of cookies) {
+      const [name, value] = cookie.trim().split('=');
+      if (name === '_access_token_') {
+        return value;
+      }
+    }
+    return null;
+  };
+  
+  const accessToken = getAccessTokenFromCookie();
+  console.log('Access token:', accessToken);
+
+
+  useEffect(() => {
+    const fetchData = async (accessToken: string) => {
+      try {
+        
+        const response = await axios.get(
+          `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/users/9a543290-977a-4434-bb93-036f314dd2df/nearby-lockers`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+  
+        console.log('Active lockers response:', response.data);
+        setNearestLockerId(response.data[0]?.locker_id || null);
+        setActiveLockers(response.data.map((locker: any) => ({ locker_id: locker.locker_id, street: locker.street })));
+      } catch (error) {
+        console.error('Error fetching active lockers:', error);
+      }
+    };
+  
+    const accessToken = getAccessTokenFromCookie();
+    if (accessToken) {
+      fetchData(accessToken);
+    }
+  }, []); // Empty dependency array to ensure the effect runs only once
+  
 
   return (
     <div>

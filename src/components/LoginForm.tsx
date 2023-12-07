@@ -42,7 +42,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) =>  {
         fetchUserData(_access_token_);
         
        //redirect to home page
-        window.location.href = '/';  
+       // window.location.href = '/';  
 
       } else {
         console.error('Login failed:', data.error);
@@ -72,6 +72,15 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) =>  {
         console.log(userData.first_name);
 
         onLogin(userData.first_name);
+         
+       /////////redirect to home page
+        //window.location.href = '/';  
+        //delete login form
+
+        //nothing shows up
+        
+      
+
 
       } else {
         console.error('Error:', userData);
