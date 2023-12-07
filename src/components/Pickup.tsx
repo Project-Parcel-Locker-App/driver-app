@@ -46,18 +46,18 @@ const Pickup: React.FC<PickupProps> = ({ lockerId }) => {
     if (selectedParcelId !== null) {
       try {
         // Add appropriate authentication information (e.g., a token)
-        const authToken = 'your_auth_token'; // Replace with your actual token
+        //const authToken = ' _access_token_'; // Replace with your actual token
         const response = await axios.post(
           'http://localhost:3000/api/parcels/update',
           {
             parcelId: selectedParcelId,
             status: 'delivered', 
           },
-          {
+           /* {
             headers: {
               Authorization: `Bearer ${authToken}`,
             },
-          }
+          }  */
         );
   
         console.log(response.data); 

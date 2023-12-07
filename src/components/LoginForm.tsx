@@ -1,13 +1,19 @@
 import { useState } from 'react';
 
-const LoginForm = () => {
+interface LoginFormProps {
+  onLogin: (firstName: string ) => void;
+}
+
+
+const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) =>  {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmit = async () => {
+  const handleLogin = async () => {
     try {
       const response = await fetch(`http://localhost:3000/api/auth/login`, {
         method: 'POST',
+        credentials: 'include',
         body: JSON.stringify({ email, password }),
         headers: {
           'Content-Type': 'application/json',
@@ -16,22 +22,28 @@ const LoginForm = () => {
 
       const data = await response.json();
 
-      if (response.status === 200) {
-        console.log('Login successful:', data.message);
-
-        console.log('data:', data);
+      if (response.ok) {
+        console.log('Login successful:', data);
 
         // サーバーからトークンを受け取ったと仮定
         const { _access_token_ } = data;
 
+        // アクセストークンを保存
+        //localStorage.setItem('_access_token_', data._access_token_);
+
+
         // アクセストークンをCookieに保存
-        document.cookie = `_access_token_=${_access_token_}; HttpOnly; SameSite=None`;
+        document.cookie = `_access_token_=${_access_token_}; SameSite=Lax`;
 
-        console.log('Cookie saved:', _access_token_);
 
-        // ユーザーをダッシュボードまたは別のページにリダイレクト
-        // ここにリダイレクトのコードを追加
-        window.location.href = '/'; 
+        console.log('Token saved:', data );
+
+        // ログイン成功後にユーザー情報を取得
+        fetchUserData(_access_token_);
+        
+       //redirect to home page
+        window.location.href = '/';  
+
       } else {
         console.error('Login failed:', data.error);
       }
@@ -39,6 +51,37 @@ const LoginForm = () => {
       console.error('Error:', error);
     }
   };
+
+  const fetchUserData = async (accessToken: string) => {
+    const apiUrl = 'http://localhost:3000/api/users/9a543290-977a-4434-bb93-036f314dd2df';
+
+    try {
+      const response = await fetch(apiUrl, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      const userData = await response.json();
+
+      if (response.ok) {
+        console.log('User Data:', userData);
+
+        console.log(userData.first_name);
+
+        onLogin(userData.first_name);
+
+      } else {
+        console.error('Error:', userData);
+      }
+    } catch (error) {
+      console.error('Fetch error:', error);
+    }
+  };
+
+ 
 
   const inputStyle = {
     width: '100%',
@@ -71,9 +114,9 @@ const LoginForm = () => {
         />
       </div>
       <button
-        style={{ backgroundColor: '#870939', color: 'white', width: '200px', height: '50px', borderRadius: '8px', marginTop: '40px' }}
-        onClick={handleSubmit}
-      >
+          style={{ backgroundColor: '#870939', color: 'white', width: '200px', height: '50px', borderRadius: '8px', marginTop: '40px' }}
+          onClick={handleLogin}
+       >
         Log In
       </button>
     </div>

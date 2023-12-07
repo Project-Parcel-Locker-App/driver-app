@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { BrowserRouter as Router, Link, Routes, Route, Outlet } from 'react-router-dom';
+import Header from './Header';
 import FreeCabinetsList from './FreeCabinetsList';
 import Pickup from './Pickup';
 import Deliver from './Deliver';
@@ -10,48 +11,10 @@ import LoginForm from './LoginForm';
 
 import '../App.css';
 
-const Header: React.FC = () => {
-  const containerStyle: React.CSSProperties = {
-    position: 'fixed',
-    top: '0',
-    left: '0',
-    width: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    background: '#870939',
-    color: 'white',
-    zIndex: '1000',
-    padding: '15px',
-    justifyContent: 'space-between',
-  };
-
-  const linkStyle = { textDecoration: 'none', color: 'white', marginRight: '20px', letterSpacing: '2px' };
-
-  return (
-    <div style={containerStyle}>
-      <Link to="/" style={linkStyle}>
-        <h2 style={{ margin: '0' }}>Driver App</h2>
-      </Link>
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <Link to="/freeCabinets" style={linkStyle}>
-          <h3>Free Cabinets</h3>
-        </Link>
-        <Link to="/pickup" style={linkStyle}>
-          <h3>Pickup</h3>
-        </Link>
-        <Link to="/deliver" style={linkStyle}>
-          <h3>Deliver</h3>
-        </Link>
-      </div>
-    </div>
-  );
-};
-
-// ... 他の import 文
-
 const ActiveParcelLockerSelector: React.FC<{ onSelect: (lockerId: string, street: string) => void }> = ({ onSelect }) => {
   const [activeLockers, setActiveLockers] = useState<{ locker_id: string; street: string }[]>([]);
   const [nearestLockerId, setNearestLockerId] = useState<string | null>(null);
+  
 
   useEffect(() => {
     // one driver
@@ -70,7 +33,7 @@ const ActiveParcelLockerSelector: React.FC<{ onSelect: (lockerId: string, street
 
   return (
     <div>
-      <h2>Select Active Parcel Locker</h2>
+      <h2  style={{ marginTop : '100 px' }}>Select Active Parcel Locker</h2>
       <div style={{ display: 'flex' , flexDirection: 'column'}}>
         {activeLockers
           .sort((a, b) => parseInt(a.locker_id) - parseInt(b.locker_id))
@@ -101,26 +64,32 @@ const ActiveParcelLockerSelector: React.FC<{ onSelect: (lockerId: string, street
   );
 };
 
-// ... 他のコンポーネントやルーティングの部分
-
 
 const DriverApp: React.FC = () => {
+  const [isLoggedIn, setLoggedIn] = useState(false);
   const [selectedLocker, setSelectedLocker] = useState<string | null>(null);
+  const [userFirstName, setUserFirstName] = useState<string>(''); 
 
   const handleLockerSelect = (lockerId: string) => {
     setSelectedLocker(lockerId);
     console.log('Selected Locker ID:', lockerId);
   };
 
+  
+  const handleLogin = (firstName: string) => {
+    // ログイン処理が成功したときに呼ばれる
+    setUserFirstName(firstName);
+    setLoggedIn(true);
+  };
+
+
   return (
     <Router>
       <div>
-        <Header />
+        <Header isLoggedIn={isLoggedIn} userFirstName={userFirstName} />
         <Routes>
-          <Route
-            path="/login"
-            element={<LoginForm />}
-          />
+          <Route path="/login" element={<LoginForm onLogin={handleLogin} />} />
+         
           <Route
             path="/"
             element={

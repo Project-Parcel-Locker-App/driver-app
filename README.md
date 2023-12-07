@@ -1,3 +1,12 @@
+# Login
+username:
+klaus.schmid@driver.com
+
+Password:
+password1234
+
+
+
 # Parcel Delivery Driver App
 
 This application is part of the Advanced Web Applications Project (DIN22SP) for creating a packet receiving and sending application. The focus of this app is to facilitate the workflow for delivery truck drivers interacting with the automated parcel delivery point/locker system.
@@ -44,12 +53,6 @@ The Parcel Delivery Driver App is designed to assist delivery truck drivers in m
 
 ## Installation
 
-# Login
-username:
-klaus.schmid@driver.com
-
-Password:
-password1234
 
 
 1. Clone the repository:
