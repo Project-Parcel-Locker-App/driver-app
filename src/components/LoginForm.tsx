@@ -49,7 +49,15 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) =>  {
   };
 
   const fetchUserData = async (accessToken: string) => {
-    const apiUrl = 'http://localhost:3000/api/users/9a543290-977a-4434-bb93-036f314dd2df';
+
+     // Split the cookie string into an array of individual cookies
+     const cookies = document.cookie.split(';');
+     // Find the cookie containing 'user_id' and extract its value
+     const userIdCookie = cookies.find((cookie) => cookie.includes('user_id'));
+     const userId = userIdCookie ? userIdCookie.split('=')[1] : null;
+
+    const apiUrl = `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/users/${userId}`;
+   // const apiUrl = 'http://localhost:3000/api/users/9a543290-977a-4434-bb93-036f314dd2df';
 
     try {
       const response = await fetch(apiUrl, {
