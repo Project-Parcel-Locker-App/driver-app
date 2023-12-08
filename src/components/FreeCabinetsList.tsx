@@ -102,8 +102,11 @@ const Free: React.FC<FreeProps> = ({ lockerId }) => {
 
   return (
     <div>
-      <h2>Locker {lockerId}</h2>
+      
       <h2>Free Cabinets</h2>
+      
+      <p>The colored cabinets are empty.  </p>
+      <h2>Locker {lockerId}</h2>
 
       {arrangeCabinets()}
     </div>

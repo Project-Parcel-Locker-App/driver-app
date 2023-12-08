@@ -142,8 +142,12 @@ const Pickup: React.FC<PickupProps> = ({ lockerId }) => {
 
   return (
     <div>
-      <h2>Locker {lockerId}</h2>
+      
       <h2>Pickup Cabinets </h2>
+      
+      <p>The colored cabinets contain a parcel. </p>
+      <p>Please select a cabinet and proceed with picking up the parcel.</p>
+      <h2>Locker {lockerId}</h2>
       {arrangeCabinets()}
       {selectedParcelId !== null && (
         <div>
