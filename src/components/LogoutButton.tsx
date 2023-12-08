@@ -44,7 +44,7 @@ const LogoutButton: React.FC<LogoutButtonProps> = ({ onLogout }) => {
       onClick={handleLogout}
       src="src\assets\logout.png" // Specify the path to your logout image
       alt="Logout"
-      style={{ height: '30px' }} // Adjust the style as needed
+      style={{ height: '30px',marginLeft: '20px' }} // Adjust the style as needed
     />
   );
 };
