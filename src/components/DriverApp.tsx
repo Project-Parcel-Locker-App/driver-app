@@ -14,23 +14,6 @@ import '../App.css';
 const ActiveParcelLockerSelector: React.FC<{ onSelect: (lockerId: string, street: string) => void }> = ({ onSelect }) => {
   const [activeLockers, setActiveLockers] = useState<{ locker_id: string; street: string }[]>([]);
   const [nearestLockerId, setNearestLockerId] = useState<string | null>(null);
-  
-/* 
-  useEffect(() => {
-    // one driver
-    axios
-      .get(`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/users/9a543290-977a-4434-bb93-036f314dd2df/nearby-lockers`)
-      .then((response) => {
-        console.log('Active lockers response:', response.data);
-        setNearestLockerId(response.data[0]?.locker_id || null);
-        setActiveLockers(response.data.map((locker: any) => ({ locker_id: locker.locker_id, street: locker.street })));
-        console.log('Active lockers:', activeLockers);
-      })
-      .catch((error) => {
-        console.error('Error fetching active lockers:', error);
-      });
-  }, []); // Empty dependency array to ensure the effect runs only once
- */
 
   const getAccessTokenFromCookie = () => {
     const cookies = document.cookie.split(';');
@@ -78,7 +61,7 @@ const ActiveParcelLockerSelector: React.FC<{ onSelect: (lockerId: string, street
 
   return (
     <div>
-      <h2  style={{ marginTop : '100 px' }}>Select Active Parcel Locker</h2>
+      <h2  style={{ marginTop : '100px' }}>Select Active Parcel Locker</h2>
       <div style={{ display: 'flex' , flexDirection: 'column'}}>
         {activeLockers
           .sort((a, b) => parseInt(a.locker_id) - parseInt(b.locker_id))
@@ -90,7 +73,7 @@ const ActiveParcelLockerSelector: React.FC<{ onSelect: (lockerId: string, street
                 fontSize: locker_id === nearestLockerId ? '20px' : '14px',
                 marginRight: '20px',
                 marginTop: '20px',
-                marginBottom: '10px',  
+                marginBottom: '5px',  
                 padding: locker_id === nearestLockerId ? '15px' : '10px',
                 backgroundColor: locker_id === nearestLockerId ? '#870939' : '#BDBBBC',
                 color: locker_id === nearestLockerId ? 'white' : 'black',
@@ -122,7 +105,7 @@ const DriverApp: React.FC = () => {
 
   
   const handleLogin = (firstName: string) => {
-    // ログイン処理が成功したときに呼ばれる
+    
     setUserFirstName(firstName);
     setLoggedIn(true);
   };

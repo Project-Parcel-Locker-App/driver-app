@@ -1,13 +1,11 @@
 // Header.tsx
 import React from 'react';
-
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 interface HeaderProps {
   isLoggedIn: boolean;
   userFirstName: string;
- 
 }
 
 const Header: React.FC<HeaderProps> = ({ isLoggedIn, userFirstName }) => {
@@ -27,15 +25,12 @@ const Header: React.FC<HeaderProps> = ({ isLoggedIn, userFirstName }) => {
       );
 
       if (response.status === 200) {
-
         console.log('Logout successful:', response.data);
-        
-        //delete from cookie
+
+        // Delete token from cookie
         document.cookie = '_access_token_=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT;';
 
-     
-
-        // redirect to login page
+        // Redirect to login page
         navigate('/login');
 
       } else {
@@ -63,41 +58,49 @@ const Header: React.FC<HeaderProps> = ({ isLoggedIn, userFirstName }) => {
   const linkStyle = { textDecoration: 'none', color: 'white', marginRight: '20px', letterSpacing: '2px' };
   const userInfoStyle = { display: 'flex', alignItems: 'center' };
 
-  return (
-    <div style={containerStyle}>
-      <Link to="/" style={linkStyle}>
-        {isLoggedIn ? (
-          <div style={userInfoStyle}>
-            <h2 style={{ margin: '0', marginRight: '20px' }}>Hi! {userFirstName}</h2>
-            <button style={{ background: 'white', border: 'none', color: 'black', cursor: 'pointer' }} onClick={handleLogout}>
-              Logout
-            </button>
-          </div>
-        ) : (
-          <h2 style={{ margin: '0' }}>Driver App</h2>
-        )}
+  // Check if token exists in cookie
+  const isTokenExist = document.cookie.split(';').some((cookie) => cookie.trim().startsWith('_access_token_='));
+
+return (
+  <div style={containerStyle}>
+    {isTokenExist ? (
+      <Link to="" style={linkStyle}>
+        <div style={userInfoStyle}>
+          <h2 style={{ margin: '0', marginRight: '20px' }}>Hi! {userFirstName}</h2>
+          <button style={{ background: 'white', border: 'none', color: 'black', cursor: 'pointer' }} onClick={handleLogout}>
+            Logout
+          </button>
+        </div>
       </Link>
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        {isLoggedIn ? (
-          <>
-            <Link to="/freeCabinets" style={linkStyle}>
-              <h3>Free Cabinets</h3>
-            </Link>
-            <Link to="/pickup" style={linkStyle}>
-              <h3>Pickup</h3>
-            </Link>
-            <Link to="/deliver" style={linkStyle}>
-              <h3>Deliver</h3>
-            </Link>
-          </>
-        ) : (
-          <Link to="/login" style={linkStyle}>
-            <h3>Please Login</h3>
+    ) : (
+      <h2 style={{ margin: '0' }}>Driver App</h2>
+    )}
+    <div style={{ display: 'flex', alignItems: 'center' }}>
+      {isTokenExist && (
+        <>
+          <Link to="/" style={linkStyle}>
+            <h3>select Locker</h3>
           </Link>
-        )}
-      </div>
+          <Link to="/freeCabinets" style={linkStyle}>
+            <h3>Free</h3>
+          </Link>
+          <Link to="/pickup" style={linkStyle}>
+            <h3>Pickup</h3>
+          </Link>
+          <Link to="/deliver" style={linkStyle}>
+            <h3>Deliver</h3>
+          </Link>
+        </>
+      )}
+      {!isTokenExist && (
+        <Link to="/login" style={linkStyle}>
+          <h3>Please Login</h3>
+        </Link>
+      )}
     </div>
-  );
+  </div>
+);
+
 };
 
 export default Header;

@@ -1,4 +1,7 @@
-import { useState } from 'react';
+import { useState, } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+
 
 interface LoginFormProps {
   onLogin: (firstName: string ) => void;
@@ -8,6 +11,8 @@ interface LoginFormProps {
 const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) =>  {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const navigate = useNavigate();
 
   const handleLogin = async () => {
     try {
@@ -71,10 +76,12 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) =>  {
 
         console.log(userData.first_name);
 
+
+
         onLogin(userData.first_name);
          
        /////////redirect to home page
-        //window.location.href = '/';  
+        navigate('/');
         //delete login form
 
         //nothing shows up
