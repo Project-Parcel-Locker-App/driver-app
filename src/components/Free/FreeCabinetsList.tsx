@@ -15,24 +15,26 @@ interface FreeProps {
 
 const Free: React.FC<FreeProps> = ({ lockerId }) => {
   const [cabinetStates, setCabinetStates] = useState<string[]>([]);
-  
-  // const [cabinets, setCabinets] = useState<Cabinet[]>([]);
+  const [cabinets, setCabinets] = useState<Cabinet[]>([]);
 
   const fetchCabinetStates = async () => {
     try {
-      //console.log('lockerId に対するキャビネットを取得中:', lockerId);
       const response = await axios.get(`http://localhost:3000/api/lockers/${lockerId}/cabinets`);
-      
       const fetchedCabinets: Cabinet[] = response.data.cabinets || [];
       
+      // idプロパティを基準に昇順にソートする
+      const sortedCabinets = fetchedCabinets.sort((a, b) => a.id - b.id);
+
+      console.log('sortedCabinets:', sortedCabinets);
+
       // Map to extract parcel information
-      const cabinetStatusArray = fetchedCabinets.map((cabinet) => (cabinet.parcel !== null ? cabinet.parcel : null));
+      const cabinetStatusArray = sortedCabinets.map((cabinet) => (cabinet.parcel !== null ? cabinet.parcel : null));
       
       console.log('cabinetStatusArray:', cabinetStatusArray);
       console.log('fetchCabinetStates - lockerId:', lockerId);
-            
+
       setCabinetStates(cabinetStatusArray);
-      // setCabinets(filteredCabinets);
+      setCabinets(sortedCabinets);
     } catch (error) {
       console.error('Error fetching cabinet states:', error);
     }
@@ -41,7 +43,6 @@ const Free: React.FC<FreeProps> = ({ lockerId }) => {
   useEffect(() => {
     // Fetch cabinet states from the backend
     fetchCabinetStates();
-    
   }, [lockerId]);
 
   // Function to arrange cabinets in the specified format
@@ -56,7 +57,9 @@ const Free: React.FC<FreeProps> = ({ lockerId }) => {
       // Loop through each cabinet in the row
       for (let colIndex = 0; colIndex < 5; colIndex++) {
         // Updated to use cabinetStates directly to check if the cabinet is null
-        const isFree = cabinetStates[cabinetCount - 1] === null;
+        const cabinet = cabinets[cabinetCount - 1];
+        const isFree = !cabinet?.parcel || (cabinet?.parcel && cabinet?.parcel?.parcel_status === null);
+
 
         arrangedCabinets.push(
           <div
@@ -67,7 +70,7 @@ const Free: React.FC<FreeProps> = ({ lockerId }) => {
               height: '80px',
               border: '1px solid black',
               textAlign: 'center',
-              backgroundColor: isFree ? '#23856D ' : 'white',
+              backgroundColor: isFree ? '#23856D' : 'white',
               color: 'black',
               display: 'flex',
               flexDirection: 'column',
@@ -102,12 +105,9 @@ const Free: React.FC<FreeProps> = ({ lockerId }) => {
 
   return (
     <div>
-      
       <h2>Free Cabinets</h2>
-      
-      <p>The colored cabinets are empty.  </p>
+      <p>The colored cabinets are empty.</p>
       <h2>Locker {lockerId}</h2>
-
       {arrangeCabinets()}
     </div>
   );

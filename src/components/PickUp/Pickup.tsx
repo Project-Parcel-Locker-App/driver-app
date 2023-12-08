@@ -26,7 +26,13 @@ const Pickup: React.FC<PickupProps> = ({ lockerId }) => {
       const response = await axios.get(`http://localhost:3000/api/lockers/${lockerId}/cabinets`);
       //const response = await axios.get(`http://localhost:3000/api/lockers/${lockerId}`);
       
+   
       const fetchedCabinets: Cabinet[] = response.data.cabinets || [];
+
+      // idプロパティを基準に昇順にソートする
+      const sortedCabinets = fetchedCabinets.sort((a, b) => a.id - b.id);
+
+      console.log('sortedCabinets:', sortedCabinets);
             
       setFetchedCabinets(fetchedCabinets);
     } catch (error) {

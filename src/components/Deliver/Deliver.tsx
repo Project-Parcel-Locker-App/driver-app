@@ -25,10 +25,17 @@ const Deliver: React.FC<DeliverProps> = ({ lockerId }) => {
       const response = await axios.get(`http://localhost:3000/api/lockers/${lockerId}/cabinets`);
       
       //const response = await axios.get(`http://localhost:3000/api/lockers/${lockerId}`);
+
       const fetchedCabinets: Cabinet[] = response.data.cabinets || [];
+      
+      // idプロパティを基準に昇順にソートする
+      const sortedCabinets = fetchedCabinets.sort((a, b) => a.id - b.id);
+      console.log('sortedCabinets:', sortedCabinets);
+
       const cabinetStatusArray = fetchedCabinets.map((cabinets) => cabinets.parcel);
+      
       console.log('cabinetDeliverStatusArray:', cabinetStatusArray);
-      setCabinetStates(cabinetStatusArray);
+      setCabinetStates(cabinetStatusArray); 
       setCabinets(fetchedCabinets);
     } catch (error) {
       console.error('Error fetching cabinet states:', error);
@@ -51,7 +58,10 @@ const Deliver: React.FC<DeliverProps> = ({ lockerId }) => {
       // Loop through each cabinet in the row
       for (let colIndex = 0; colIndex < 5; colIndex++) {
 
-        const isDeliver = cabinetStates[cabinetCount - 1]  == null;
+        const cabinet = cabinets[cabinetCount - 1];
+        //const parcelId = cabinet?.parcel?.id || null;
+        const isNull = !cabinet?.parcel && cabinet?.parcel?.parcel_status !== null;
+        //const isDeliver = cabinetStates[cabinetCount - 1]  == null;
 
         arrangedCabinets.push(
           <Link
@@ -67,7 +77,7 @@ const Deliver: React.FC<DeliverProps> = ({ lockerId }) => {
               height: '80px',
               border: '1px solid black',
               textAlign: 'center',
-              backgroundColor: isDeliver ? '#1A659E' : 'white',
+              backgroundColor: isNull ? '#1A659E' : 'white',
               color: 'black',
               display: 'flex',
               flexDirection: 'column',
