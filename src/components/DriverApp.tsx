@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 //import axios from 'axios';
 import { BrowserRouter as Router, Link, Routes, Route, Outlet } from 'react-router-dom';
 import Header from './Header';
-import FreeCabinetsList from './FreeCabinetsList';
-import Pickup from './Pickup';
-import Deliver from './Deliver';
-import PickupDetail from './PickupDetail';
-import DeliverDetail from './DeliverDetail';
+
+import FreeCabinetsList from './Free/FreeCabinetsList';
+import Pickup from './PickUp/Pickup';
+import PickupDetail from './PickUp/PickupDetail';
+import Deliver from './Deliver/Deliver';
+import DeliverDetail from './Deliver/DeliverDetail';
+
 import LoginForm from './LoginForm';
 import ActiveParcelLockerSelector from './ActiveParcelLockerSelector';  
 
@@ -22,13 +24,11 @@ const DriverApp: React.FC = () => {
     console.log('Selected Locker ID:', lockerId);
   };
 
-  
   const handleLogin = (firstName: string) => {
     
     setUserFirstName(firstName);
     setLoggedIn(true);
   };
-
 
   return (
     <Router>
