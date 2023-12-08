@@ -1,17 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState,  } from 'react';
 //import axios from 'axios';
 import { BrowserRouter as Router, Link, Routes, Route, Outlet } from 'react-router-dom';
 import Header from './Header';
-
 import FreeCabinetsList from './Free/FreeCabinetsList';
 import Pickup from './PickUp/Pickup';
 import PickupDetail from './PickUp/PickupDetail';
 import Deliver from './Deliver/Deliver';
 import DeliverDetail from './Deliver/DeliverDetail';
-
 import LoginForm from './LoginForm';
 import ActiveParcelLockerSelector from './ActiveParcelLockerSelector';  
-
 import '../App.css';
 
 const DriverApp: React.FC = () => {
@@ -36,7 +33,6 @@ const DriverApp: React.FC = () => {
         <Header isLoggedIn={isLoggedIn} userFirstName={userFirstName} />
         <Routes>
           <Route path="/login" element={<LoginForm onLogin={handleLogin} />} />
-         
           <Route
             path="/"
             element={

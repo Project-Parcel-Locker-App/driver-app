@@ -1,12 +1,8 @@
 import { useState, } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-
-
 interface LoginFormProps {
   onLogin: (firstName: string ) => void;
 }
-
 
 const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) =>  {
   const [email, setEmail] = useState('');
@@ -30,25 +26,20 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) =>  {
       if (response.ok) {
         console.log('Login successful:', data);
 
-        // サーバーからトークンを受け取ったと仮定
+       
         const { _access_token_ } = data;
 
-        // アクセストークンを保存
+        // keep the token in local storage
         //localStorage.setItem('_access_token_', data._access_token_);
 
-
-        // アクセストークンをCookieに保存
+        // keep the token in cookie
         document.cookie = `_access_token_=${_access_token_}; SameSite=Lax`;
+        // keep the user id in cookie
+        document.cookie = `user_id=${data.user_id}; SameSite=Lax`;
 
-
-        console.log('Token saved:', data );
-
-        // ログイン成功後にユーザー情報を取得
+        // fetch user data
         fetchUserData(_access_token_);
         
-       //redirect to home page
-       // window.location.href = '/';  
-
       } else {
         console.error('Login failed:', data.error);
       }
@@ -72,22 +63,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) =>  {
       const userData = await response.json();
 
       if (response.ok) {
-        console.log('User Data:', userData);
-
-        console.log(userData.first_name);
-
-
-
-        onLogin(userData.first_name);
-         
-       /////////redirect to home page
+    
+        onLogin(userData.first_name);  
         navigate('/');
-        //delete login form
-
-        //nothing shows up
-        
-      
-
 
       } else {
         console.error('Error:', userData);
@@ -96,8 +74,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) =>  {
       console.error('Fetch error:', error);
     }
   };
-
- 
 
   const inputStyle = {
     width: '100%',
