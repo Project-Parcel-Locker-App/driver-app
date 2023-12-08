@@ -39,20 +39,27 @@ const Header: React.FC<HeaderProps> = ({ isLoggedIn, userFirstName }) => {
     <div style={containerStyle}>
       {isTokenExist ? (
         <Link to="" style={linkStyle}>
-          <div style={userInfoStyle}>
-            <h2 style={{ margin: '0', marginRight: '20px' }}>Hi! {userFirstName}</h2>
+           <div style={{ ...userInfoStyle, display: 'flex', alignItems: 'center' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginRight: '20px' }}>
+              <img src="src\assets\logo.png" alt="Logo" style={{ color: '#870939', height: '30px' }} />
+              <h2 style={{ margin: '0', marginTop: '5px' }}>Hi! {userFirstName}</h2>
+            </div>
             <LogoutButton onLogout={handleLogout} />
           </div>
+
+          {/* <div style={userInfoStyle}>
+            <img src="src\assets\logo.png" alt="Logo" style={{ color: '#870939',  height: '30px', }} />
+            <h2 style={{ margin: '0', marginRight: '20px' }}>Hi! {userFirstName}</h2>
+            <LogoutButton onLogout={handleLogout} />
+          </div> */}
         </Link>
       ) : (
+        
         <h2 style={{ margin: '0' }}>Driver App</h2>
       )}
       <div style={{ display: 'flex', alignItems: 'center' }}>
         {isTokenExist && (
           <>
-            <Link to="/" style={linkStyle}>
-              <h3>select Locker</h3>
-            </Link>
             <Link to="/freeCabinets" style={linkStyle}>
               <h3>Free</h3>
             </Link>
@@ -61,6 +68,9 @@ const Header: React.FC<HeaderProps> = ({ isLoggedIn, userFirstName }) => {
             </Link>
             <Link to="/deliver" style={linkStyle}>
               <h3>Deliver</h3>
+            </Link>
+            <Link to="/" style={linkStyle}>
+              <img src="src\assets\home.png" alt="Home" style={{ color: '#870939', height: '30px' }} />
             </Link>
           </>
         )}

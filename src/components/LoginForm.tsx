@@ -85,6 +85,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) =>  {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
+
+      <img src="src\assets\rocket.png" alt="Logo" style={{ color: '#870939', width: '150px', marginBottom: '20px' }} />
       <div style={{ marginBottom: '10px', textAlign: 'left', width: '300px' }}>
         <label style={{ marginBottom: '2px', color: '#870939', display: 'block' }}>Username/Email</label>
         <input
@@ -111,6 +113,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) =>  {
        >
         Log In
       </button>
+      
     </div>
   );
 };
