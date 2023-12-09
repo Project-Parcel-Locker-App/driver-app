@@ -73,7 +73,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) =>  {
       if (response.ok) {
     
         onLogin(userData.first_name);  
-        navigate('/');
+        navigate('/selectlocker');
 
       } else {
         console.error('Error:', userData);

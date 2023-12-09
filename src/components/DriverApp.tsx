@@ -32,9 +32,9 @@ const DriverApp: React.FC = () => {
       <div>
         <Header isLoggedIn={isLoggedIn} userFirstName={userFirstName} />
         <Routes>
-          <Route path="/login" element={<LoginForm onLogin={handleLogin} />} />
+          <Route path="/" element={<LoginForm onLogin={handleLogin} />} />
           <Route
-            path="/"
+            path="/selectlocker"
             element={
               <div>
                 <ActiveParcelLockerSelector onSelect={(lockerId) => handleLockerSelect(lockerId)} />

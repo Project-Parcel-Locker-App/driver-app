@@ -12,7 +12,7 @@ const Header: React.FC<HeaderProps> = ({ isLoggedIn, userFirstName }) => {
 
   const handleLogout = () => {
     // Redirect to login page after logout
-    navigate('/login');
+    navigate('/');
   };
 
   const containerStyle: React.CSSProperties = {
@@ -38,7 +38,7 @@ const Header: React.FC<HeaderProps> = ({ isLoggedIn, userFirstName }) => {
   return (
     <div style={containerStyle}>
       {isTokenExist ? (
-        <Link to="" style={linkStyle}>
+        <Link to="/selectlocker" style={linkStyle}>
            <div style={{ ...userInfoStyle, display: 'flex', alignItems: 'center' }}>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginRight: '20px' }}>
               <img src="src\assets\logo.png" alt="Logo" style={{  height: '30px', marginLeft: '10px' ,marginTop: '5px' }} />
@@ -72,13 +72,13 @@ const Header: React.FC<HeaderProps> = ({ isLoggedIn, userFirstName }) => {
             <Link to="/deliver" style={linkStyle }>
               <h3>Deliver</h3>
             </Link>
-            <Link to="/" style={linkStyle}>
+            <Link to="/selectlocker" style={linkStyle}>
               <img src="src\assets\home.png" alt="Home" style={{ color: '#870939', height: '30px',marginRight: '10px' }} />
             </Link>
           </>
         )}
         {!isTokenExist && (
-          <Link to="/login" style={linkStyle}>
+          <Link to="/" style={linkStyle}>
             <h3>Please Login</h3>
           </Link>
         )}
