@@ -1,122 +1,40 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState,  } from 'react';
+//import axios from 'axios';
 import { BrowserRouter as Router, Link, Routes, Route, Outlet } from 'react-router-dom';
-import FreeCabinetsList from './FreeCabinetsList';
-import Pickup from './Pickup';
-import Deliver from './Deliver';
-import PickupDetail from './PickupDetail';
-import DeliverDetail from './DeliverDetail';
-
+import Header from './Header';
+import FreeCabinetsList from './Free/FreeCabinetsList';
+import Pickup from './PickUp/Pickup';
+import PickupDetail from './PickUp/PickupDetail';
+import Deliver from './Deliver/Deliver';
+import DeliverDetail from './Deliver/DeliverDetail';
+import LoginForm from './LoginForm';
+import ActiveParcelLockerSelector from './ActiveParcelLockerSelector';  
 import '../App.css';
 
-
-
-const Header: React.FC = () => {
-  const containerStyle: React.CSSProperties = {
-    position: 'fixed',
-    top: '0',
-    left: '0',
-    width: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    background: '#870939',
-    color: 'white',
-    zIndex: '1000', 
-    padding: '15px', 
-    justifyContent: 'space-between', 
-  };
-
-  const linkStyle = { textDecoration: 'none', color: 'white', marginRight: '20px', letterSpacing: '2px' };
-
-  return (
-    <div style={containerStyle}>
-      <Link to="/" style={linkStyle}>
-        <h2 style={{ margin: '0' }}>Driver App</h2>
-      </Link>
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <Link to="/freeCabinets" style={linkStyle}>
-          <h3>Free Cabinets</h3>
-        </Link>
-        <Link to="/pickup" style={linkStyle}>
-          <h3>Pickup</h3>
-        </Link>
-        <Link to="/deliver" style={linkStyle}>
-          <h3>Deliver</h3>
-        </Link>
-      </div>
-    </div>
-  );
-};
-
-
-
-const ActiveParcelLockerSelector: React.FC<{ onSelect: (lockerId: string) => void }> = ({ onSelect }) => {
-  const [activeLockers, setActiveLockers] = useState<string[]>([]);
-  const [nearestLockerId, setNearestLockerId] = useState<string | null>(null);
-
-
-  useEffect(() => {
-    // one driver
-    axios.get('http://localhost:3000/api/lockers/nearest/7c57fb0e-5477-49d7-b7c9-0da4f21a9799')
-      .then((response) => {
-        setNearestLockerId(response.data[0]?.locker_id || null);
-        setActiveLockers(response.data.map((locker: any) => locker.locker_id));
-      })
-      .catch((error) => {
-        console.error('Error fetching active lockers:', error);
-      });
-  }, []); // Empty dependency array to ensure the effect runs only once
-
-  return (
-    <div>
-      <h2>Select Active Parcel Locker</h2>
-      {/* display botton according to locker id */}
-      <div style={{ display: 'flex' }}>
-        {activeLockers
-          .sort((a, b) => parseInt(a) - parseInt(b))
-          .map((lockerId) => (
-            <button
-            key={lockerId}
-            onClick={() => onSelect(lockerId)}
-            style={{
-              fontSize: lockerId === nearestLockerId ? '20px' : '14px',
-              marginRight: '20px',
-              padding: lockerId === nearestLockerId ? '15px' : '10px',
-              backgroundColor: lockerId === nearestLockerId ?  '#870939' : '#BDBBBC', 
-              color: lockerId === nearestLockerId ? 'white' : 'black' ,
-            }}
-          >
-            <Link to={`/locker/${lockerId}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-              Locker {lockerId}
-            </Link>
-          </button>
-          
-          ))}
-      </div>
-    </div>
-  );
-};
-
 const DriverApp: React.FC = () => {
+  const [isLoggedIn, setLoggedIn] = useState(false);
   const [selectedLocker, setSelectedLocker] = useState<string | null>(null);
+  const [userFirstName, setUserFirstName] = useState<string>(''); 
 
-  
   const handleLockerSelect = (lockerId: string) => {
     setSelectedLocker(lockerId);
+    console.log('Selected Locker ID:', lockerId);
+  };
+
+  const handleLogin = (firstName: string) => {
+    
+    setUserFirstName(firstName);
+    setLoggedIn(true);
   };
 
   return (
     <Router>
       <div>
-
-        {/* ヘッダー */}
-        <Header />
-       
-
-        {/* ロッカー選択画面 */}
+        <Header isLoggedIn={isLoggedIn} userFirstName={userFirstName} />
         <Routes>
+          <Route path="/" element={<LoginForm onLogin={handleLogin} />} />
           <Route
-            path="/"
+            path="/selectlocker"
             element={
               <div>
                 <ActiveParcelLockerSelector onSelect={(lockerId) => handleLockerSelect(lockerId)} />
@@ -129,7 +47,6 @@ const DriverApp: React.FC = () => {
             element={
               <div>
                 <h2>Select cabinets status</h2>
-                
                 <div style={{ display: 'flex', gap: '10px' }}>
                   <Link to="/freeCabinets">
                     <button style={{ backgroundColor: 'rgb(241, 226, 231)', padding: '20px', border: 'none', cursor: '#F1E2E7' }}>Free Cabinets</button>
@@ -141,39 +58,16 @@ const DriverApp: React.FC = () => {
                     <button style={{ backgroundColor: 'rgb(241, 226, 231)', padding: '20px', border: 'none', cursor: 'pointer' }}>Deliver</button>
                   </Link>
                 </div>
-
                 <Outlet />
               </div>
             }
           />
-          
-         <Route
-            path="/pickup/:cabinetId"
-            element={<PickupDetail lockerId={selectedLocker || ''} />}
-          />
-
-
-         <Route
-            path="/deliver/:cabinetId"
-            element={<DeliverDetail lockerId={selectedLocker || ''} />}
-          />
-
-
-
-
-        </Routes>
-
-      
-
-        {/* 各ビュー */}
-        <Routes>
+          <Route path="/pickup/:cabinetId" element={<PickupDetail lockerId={selectedLocker || ''} />} />
+          <Route path="/deliver/:cabinetId" element={<DeliverDetail lockerId={selectedLocker || ''} />} />
           <Route path="/freeCabinets" element={<FreeCabinetsList lockerId={selectedLocker || ''} />} />
           <Route path="/pickup" element={<Pickup lockerId={selectedLocker || ''} />} />
           <Route path="/deliver" element={<Deliver lockerId={selectedLocker || ''} />} />
         </Routes>
-
-          
-
       </div>
     </Router>
   );

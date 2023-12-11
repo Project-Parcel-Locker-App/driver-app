@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
+
 
 interface Cabinet {
   id: number;
@@ -9,21 +11,31 @@ interface Cabinet {
   parcel: any; // Replace 'any' with the actual type of 'parcel'
 }
 
-interface FreeProps {
+interface DeliverProps {
   lockerId: string;
 }
 
-const Free: React.FC<FreeProps> = ({ lockerId }) => {
+const Deliver: React.FC<DeliverProps> = ({ lockerId }) => {
   const [cabinetStates, setCabinetStates] = useState<string[]>([]);
   const [cabinets, setCabinets] = useState<Cabinet[]>([]);
+  console.log(cabinets);
 
   const fetchCabinetStates = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/api/lockers/${lockerId}`);
+      const response = await axios.get(`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/lockers/${lockerId}/cabinets`);
+      
+      //const response = await axios.get(`http://localhost:3000/api/lockers/${lockerId}`);
+
       const fetchedCabinets: Cabinet[] = response.data.cabinets || [];
-      const cabinetStatusArray = fetchedCabinets.map((cabinet) => cabinet.cabinet_status);
-      console.log('cabinetStatusArray:', cabinetStatusArray);
-      setCabinetStates(cabinetStatusArray);
+      
+      // idプロパティを基準に昇順にソートする
+      const sortedCabinets = fetchedCabinets.sort((a, b) => a.id - b.id);
+      console.log('sortedCabinets:', sortedCabinets);
+
+      const cabinetStatusArray = fetchedCabinets.map((cabinets) => cabinets.parcel);
+      
+      console.log('cabinetDeliverStatusArray:', cabinetStatusArray);
+      setCabinetStates(cabinetStatusArray); 
       setCabinets(fetchedCabinets);
     } catch (error) {
       console.error('Error fetching cabinet states:', error);
@@ -35,7 +47,6 @@ const Free: React.FC<FreeProps> = ({ lockerId }) => {
     fetchCabinetStates();
   }, [lockerId]);
 
-  // Function to arrange cabinets in the specified format
   const arrangeCabinets = () => {
     const arrangedCabinets: JSX.Element[] = [];
 
@@ -46,9 +57,18 @@ const Free: React.FC<FreeProps> = ({ lockerId }) => {
     for (let rowIndex = 0; rowIndex < 3; rowIndex++) {
       // Loop through each cabinet in the row
       for (let colIndex = 0; colIndex < 5; colIndex++) {
-        const isFree = cabinetStates[cabinetCount - 1] === 'available' && cabinets[cabinetCount - 1]?.parcel == null;
+
+        const cabinet = cabinets[cabinetCount - 1];
+        //const parcelId = cabinet?.parcel?.id || null;
+        const isNull = !cabinet?.parcel && cabinet?.parcel?.parcel_status !== null;
+        //const isDeliver = cabinetStates[cabinetCount - 1]  == null;
 
         arrangedCabinets.push(
+          <Link
+          key={cabinetCount}
+          to={`/deliver/${cabinetCount}`} 
+          style={{ textDecoration: 'none' }}
+        >
           <div
             key={cabinetCount}
             style={{
@@ -57,7 +77,7 @@ const Free: React.FC<FreeProps> = ({ lockerId }) => {
               height: '80px',
               border: '1px solid black',
               textAlign: 'center',
-              backgroundColor: isFree ? 'green' : 'white',
+              backgroundColor: isNull ? '#1A659E' : 'white',
               color: 'black',
               display: 'flex',
               flexDirection: 'column',
@@ -67,6 +87,7 @@ const Free: React.FC<FreeProps> = ({ lockerId }) => {
           >
             <div>{cabinetCount}</div>
           </div>
+          </Link>
         );
 
         // Increment the cabinet count
@@ -92,12 +113,16 @@ const Free: React.FC<FreeProps> = ({ lockerId }) => {
 
   return (
     <div>
+      
+      <h2>Deliver Cabinets</h2>
+    
+      <p>You can deliver to the colored cabinets.  </p>
+      <p>Please choose one cabinet</p>
+      <p> and proceed to the screen to select the parcel for delivery.</p>
       <h2>Locker {lockerId}</h2>
-      <h2>Free Cabinets</h2>
-
-      {arrangeCabinets()}
+        {arrangeCabinets()}
     </div>
   );
 };
 
-export default Free;
+export default Deliver;
