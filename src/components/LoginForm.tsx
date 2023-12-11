@@ -12,7 +12,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) =>  {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/api/auth/login`, {
+      const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/auth/login`, {
         method: 'POST',
         credentials: 'include',
         body: JSON.stringify({ email, password }),

@@ -19,7 +19,8 @@ const Free: React.FC<FreeProps> = ({ lockerId }) => {
 
   const fetchCabinetStates = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/api/lockers/${lockerId}/cabinets`);
+
+      const response = await axios.get(`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/lockers/${lockerId}/cabinets`);
       const fetchedCabinets: Cabinet[] = response.data.cabinets || [];
       
       // idプロパティを基準に昇順にソートする
