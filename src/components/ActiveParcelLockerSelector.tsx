@@ -57,7 +57,7 @@ const ActiveParcelLockerSelector: React.FC<ActiveParcelLockerSelectorProps> = ({
           setActiveLockers(response.data.map((locker: any) => ({ 
             locker_id: locker.locker_id, 
             street: locker.street ,
-            distance: locker.distance
+            distance: locker.distance_km.toFixed(2) 
 
           })));
         } else {
