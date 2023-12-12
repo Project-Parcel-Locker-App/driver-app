@@ -18,7 +18,7 @@ interface DeliverProps {
 const Deliver: React.FC<DeliverProps> = ({ lockerId }) => {
   const [cabinetStates, setCabinetStates] = useState<string[]>([]);
   const [cabinets, setCabinets] = useState<Cabinet[]>([]);
-  console.log(cabinets);
+  console.log(cabinets,cabinetStates);
 
   const fetchCabinetStates = async () => {
     try {

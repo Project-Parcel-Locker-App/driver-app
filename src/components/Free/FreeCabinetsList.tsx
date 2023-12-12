@@ -15,6 +15,7 @@ interface FreeProps {
 
 const Free: React.FC<FreeProps> = ({ lockerId }) => {
   const [cabinetStates, setCabinetStates] = useState<string[]>([]);
+  console.log('cabinetStates:', cabinetStates);
   const [cabinets, setCabinets] = useState<Cabinet[]>([]);
 
   const fetchCabinetStates = async () => {

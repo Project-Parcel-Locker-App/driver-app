@@ -7,7 +7,7 @@ interface HeaderProps {
   userFirstName: string;
 }
 
-const Header: React.FC<HeaderProps> = ({ isLoggedIn, userFirstName }) => {
+const Header: React.FC<HeaderProps> = ({ userFirstName }) => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
