@@ -12,7 +12,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) =>  {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/auth/login`, {
+      const response = await fetch(`https://project-parcel-locker-app.azurewebsites.net/api/auth/login`, {
         method: 'POST',
         credentials: 'include',
         body: JSON.stringify({ email, password }),
