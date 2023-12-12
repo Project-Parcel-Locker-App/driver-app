@@ -70,7 +70,7 @@ const DeliverDetail: React.FC<DeliverDetailProps> = ({ lockerId }) => {
 
   const handleParcelSelection = (selectedParcel: Parcel) => {
     setSelectedParcelId(selectedParcel.id);
-    setSelectedSender(selectedParcel.sender);
+    setSelectedSender(selectedParcel.sender_id);
 
     if (selectedParcelRef.current) {
       selectedParcelRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -95,38 +95,67 @@ const DeliverDetail: React.FC<DeliverDetailProps> = ({ lockerId }) => {
 
   const handleCloseDoor = async () => {
     try {
-     /*  // 1. トークンの取得
-      const authTokenRow = document.cookie
+       // 1. get access token from cookie
+       const authTokenRow = document.cookie
         .split('; ')
-        .find((row) => row.startsWith('_access_token_='));
-  
+        .find(row => row.startsWith('_access_token_='));
+
       const authToken = authTokenRow ? authTokenRow.split('=')[1] : undefined;
-  
-      if (!authToken) {
-        console.error('Access token not found in cookies.');
-        return;
-      } */
 
+        if (authToken) {
+          console.log(authToken);
+        } else {
+          console.error('Access token not found in cookies.');
+        }
 
-  
-      // 2. パッチリクエストの送信
+       //1 for PATCH user route (with token)
+
+      
         // キャビネットを閉じるための情報（ロッカー ID、キャビネット ID、パーセル ID）を設定
       const lockerIdValue = lockerId;  // ロッカー ID を設定
       const cabinetIdValue = cabinetId; // キャビネット ID を設定
-      const parcelIdValue = selectedParcelId;  // パーセル ID を設定
+      const parcelIdValue = selectedParcelId; 
+      const senderId= selectedSender 
+
 
       const response = await axios.patch(
+
+       //1 for PATCH user route (with token)
+        `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/users/${senderId}/parcels/${parcelIdValue}`,
+        {
+            parcel: {
+              parcel_status: 'ready-for-pickup',
+            },
+           
+        },
+          {
+          headers: {
+            'Authorization': `Bearer ${authToken}`,
+            'Content-Type': 'application/json',
+          },
+        }  
+      );
+
+      //////////////////need more parcels belong to driver and test more!/////////////////////
+       //2 for PATCH locker route 
+      const response2 = await axios.patch(
         `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/lockers/${lockerIdValue}/cabinets/${cabinetIdValue}`,
-        { parcelIdValue },
+        {   parcelId: parcelIdValue,
+        },
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
             'Content-Type': 'application/json',
           },
         }
+
+       
       );
-  
-      // 3. レスポンスの確認
+      console.log(response.data);
+      console.log(response2.data);
+
+
+      
       if (response.status === 200) {
         console.log('Door closed successfully!update parcel status to null');
         setDoorClosed(true);
@@ -159,13 +188,18 @@ const DeliverDetail: React.FC<DeliverDetailProps> = ({ lockerId }) => {
           }}
         >
           <div style={{ flex: 1 }}>
-            <h3>Parcel {index + 1} Details</h3>
+            <h3> Details</h3>
             <p>ID: {parcel.id}</p>
             <p>Sender: {parcel.sender_id}</p>
             <p>instructions: {parcel.special_instructions}</p>
            
           </div>
-          <button onClick={() => handleParcelSelection(parcel)}>Select</button>
+          <button
+              style={{ marginLeft: '30px', margin: '30px' }}  // スペースを追加するスタイルを指定
+              onClick={() => handleParcelSelection(parcel)}
+            >
+  Select
+</button>
         </div>
       ))}
 
