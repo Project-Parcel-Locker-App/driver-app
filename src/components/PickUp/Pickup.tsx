@@ -20,6 +20,7 @@ interface PickupProps {
 const Pickup: React.FC<PickupProps> = ({ lockerId }) => {
   const [fetchedCabinets, setFetchedCabinets] = useState<Cabinet[]>([]);
   const [selectedParcelId, setSelectedParcelId] = useState<number | null>(null);
+  const [selectedCabinetId, setSelectedCabinetId] = useState<number | null>(null); // 新しいステート
 
   const fetchCabinetStates = async () => {
     try {
@@ -29,7 +30,6 @@ const Pickup: React.FC<PickupProps> = ({ lockerId }) => {
    
       const fetchedCabinets: Cabinet[] = response.data.cabinets || [];
 
-      // idプロパティを基準に昇順にソートする
       const sortedCabinets = fetchedCabinets.sort((a, b) => a.id - b.id);
 
       console.log('sortedCabinets:', sortedCabinets);
@@ -45,25 +45,48 @@ const Pickup: React.FC<PickupProps> = ({ lockerId }) => {
   }, [lockerId]);
 
   const handleCabinetClick = (parcelId: number | null) => {
-    setSelectedParcelId(parcelId);
+    // Find the clicked cabinet from fetchedCabinets
+    const clickedCabinet = fetchedCabinets.find((cabinet) => cabinet.parcel?.id === parcelId);
+    if (clickedCabinet) {
+      setSelectedParcelId(parcelId);
+      setSelectedCabinetId(clickedCabinet.id);
+      console.log('Selected Cabinet ID:', clickedCabinet.id);
+    }
   };
 
+////////////////////////////////////////////////////////////////////
   const handleConfirmAndPickup = async () => {
-    if (selectedParcelId !== null) {
+    if (selectedParcelId !== null&& selectedCabinetId !== null) {
       try {
         // Add appropriate authentication information (e.g., a token)
-        //const authToken = ' _access_token_'; // Replace with your actual token
-        const response = await axios.post(
-          '${import.meta.env.VITE_REACT_APP_API_BASE_URL}/parcels/update',
+        const authTokenRow = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('_access_token_='));
+
+      const authToken = authTokenRow ? authTokenRow.split('=')[1] : undefined;
+
+        if (authToken) {
+          console.log(authToken);
+        } else {
+          console.error('Access token not found in cookies.');
+        }
+
+        const cabinetsID = selectedCabinetId;
+        const response = await axios.patch(
+          `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/lockers/${lockerId}/cabinets/${cabinetsID}`,
           {
-            parcelId: selectedParcelId,
-            status: 'delivered', 
-          },
-           /* {
-            headers: {
-              Authorization: `Bearer ${authToken}`,
+            cabinet: {
+              parcel: {
+                parcel_status: 'in-transit',
+              },
             },
-          }  */
+          },
+            {
+            headers: {
+              'Authorization': `Bearer ${authToken}`,
+              'Content-Type': 'application/json',
+            },
+          }  
         );
   
         console.log(response.data); 
