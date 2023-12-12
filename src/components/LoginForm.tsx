@@ -12,8 +12,14 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) =>  {
 
   const handleLogin = async () => {
     try {
+<<<<<<< HEAD
       //const response = await fetch(`http://localhost:3000/api/auth/login`, {
       const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/auth/login`, {
+=======
+
+      const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/auth/login`, {
+      //const response = await fetch(`https://project-parcel-locker-app.azurewebsites.net/api/auth/login`, {
+>>>>>>> 1632c26c65fa58306ec5c6a00a535bfdb0cd59a7
         method: 'POST',
         credentials: 'include',
         body: JSON.stringify({ email, password }),
