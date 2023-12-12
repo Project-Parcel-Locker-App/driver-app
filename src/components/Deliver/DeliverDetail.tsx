@@ -29,7 +29,7 @@ const DeliverDetail: React.FC<DeliverDetailProps> = ({ lockerId }) => {
   const [selectedSender, setSelectedSender] = useState<string | null>(null);
   const [doorClosed, setDoorClosed] = useState(false);
   const selectedParcelRef = useRef<HTMLDivElement>(null);
-  const [parcels, setParcels] = useState<Parcel[]>([]); // 新しく追加
+  const [parcels, setParcels] = useState<Parcel[]>([]); 
   console.log('selectedSender:', selectedSender);
 
 
@@ -63,10 +63,10 @@ const DeliverDetail: React.FC<DeliverDetailProps> = ({ lockerId }) => {
       }
     };
 
-    fetchData(); // 関数を呼び出し
+    fetchData(); 
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // コンポーネントがマウントされたときだけ実行
+  }, []); 
 
   const handleParcelSelection = (selectedParcel: Parcel) => {
     setSelectedParcelId(selectedParcel.id);

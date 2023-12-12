@@ -10,7 +10,9 @@ interface Cabinet {
   parcel: {
     id: number;
     status: string;
+    sender_id: number;
   } | null;
+  sender_id: number;
 }
 
 interface PickupProps {
@@ -21,6 +23,7 @@ const Pickup: React.FC<PickupProps> = ({ lockerId }) => {
   const [fetchedCabinets, setFetchedCabinets] = useState<Cabinet[]>([]);
   const [selectedParcelId, setSelectedParcelId] = useState<number | null>(null);
   const [selectedCabinetId, setSelectedCabinetId] = useState<number | null>(null); // 新しいステート
+  const [senderId, setSenderId] = useState<number | null>(null); // 新しいステート
 
   const fetchCabinetStates = async () => {
     try {
@@ -50,7 +53,11 @@ const Pickup: React.FC<PickupProps> = ({ lockerId }) => {
     if (clickedCabinet) {
       setSelectedParcelId(parcelId);
       setSelectedCabinetId(clickedCabinet.id);
+      setSenderId(clickedCabinet.parcel?.sender_id ?? null);
       console.log('Selected Cabinet ID:', clickedCabinet.id);
+      console.log('Selected Sender ID:', clickedCabinet.parcel?.sender_id ?? null);
+      const senderId=clickedCabinet.parcel?.sender_id ?? null;
+      console.log('Selected Sender ID:', senderId);
     }
   };
 
@@ -72,17 +79,18 @@ const Pickup: React.FC<PickupProps> = ({ lockerId }) => {
         }
 
         const cabinetsID = selectedCabinetId;
+        console.log('cellectedCabinetId:',cabinetsID);
+        console.log('cellectedParcelId:',selectedParcelId);
 
-        //処理一個目　ロッカー user
+        //1 for PATCH user route (with token)
         const response = await axios.patch(
-          `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/users/9a543290-977a-4434-bb93-036f314dd2df/parcels/${selectedParcelId}  `,
+
+          `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/users/${senderId}/parcels/${selectedParcelId}`,
           {
-            cabinet: {
               parcel: {
                 parcel_status: 'in-transit',
               },
               driver_id: "9a543290-977a-4434-bb93-036f314dd2df",
-            },
           },
             {
             headers: {
@@ -92,7 +100,7 @@ const Pickup: React.FC<PickupProps> = ({ lockerId }) => {
           }  
         );
 
-        //処理二個目　
+        //2 for PATCH locker route 
         const response2 = await axios.patch(
           `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/lockers/${lockerId}/cabinets/${cabinetsID}`,
           {
@@ -105,10 +113,12 @@ const Pickup: React.FC<PickupProps> = ({ lockerId }) => {
           }
         );
 
-        
-          
         console.log(response.data); 
         console.log(response2.data); 
+
+        ////////redirect to the pickup page ロッカー番号拾ってないけど
+        window.location.href = '/pickup';
+
        
       } catch (error) {
         console.error('Error confirming and picking up:', error);
@@ -117,24 +127,7 @@ const Pickup: React.FC<PickupProps> = ({ lockerId }) => {
       console.warn('No parcel selected.');
     }
 
-
-
-
-
   };
-  
-  
-
- /* 
-  const handleConfirmAndPickup = () => {
-    // Implement the logic for confirming and picking up the selected parcel
-    if (selectedParcelId !== null) {
-      // Add your confirmation and pickup logic here
-      console.log(`Confirmed and Picked up Parcel ID: ${selectedParcelId}`);
-    } else {
-      console.warn('No parcel selected.');
-    }
-  }; */
 
   const arrangeCabinets = () => {
     const arrangedCabinets: JSX.Element[] = [];
@@ -206,6 +199,7 @@ const Pickup: React.FC<PickupProps> = ({ lockerId }) => {
       {selectedParcelId !== null && (
         <div>
           <p>Selected Parcel ID: {selectedParcelId}</p>
+          <div>Sender ID: {senderId}</div>
           <button onClick={handleConfirmAndPickup}>Confirm and Pickup</button>
         </div>
       )}

@@ -114,7 +114,7 @@ const Deliver: React.FC<DeliverProps> = ({ lockerId }) => {
   return (
     <div>
       
-      <h2>Deliver Cabinets</h2>
+      <h2 style={{ marginTop: '70px' }}>Deliver Cabinets</h2>
     
       <p>You can deliver to the colored cabinets.  </p>
       <p>Please choose one cabinet</p>
