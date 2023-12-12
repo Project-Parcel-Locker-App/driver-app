@@ -9,7 +9,7 @@ interface Cabinet {
   cabinet_status: string;
   parcel: {
     id: number;
-    parcel_status: string;
+    status: string;
   } | null;
 }
 
@@ -72,13 +72,16 @@ const Pickup: React.FC<PickupProps> = ({ lockerId }) => {
         }
 
         const cabinetsID = selectedCabinetId;
+
+        //処理一個目　ロッカー user
         const response = await axios.patch(
-          `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/lockers/${lockerId}/cabinets/${cabinetsID}`,
+          `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/users/9a543290-977a-4434-bb93-036f314dd2df/parcels/${selectedParcelId}  `,
           {
             cabinet: {
               parcel: {
                 parcel_status: 'in-transit',
               },
+              driver_id: "9a543290-977a-4434-bb93-036f314dd2df",
             },
           },
             {
@@ -88,8 +91,24 @@ const Pickup: React.FC<PickupProps> = ({ lockerId }) => {
             },
           }  
         );
-  
+
+        //処理二個目　
+        const response2 = await axios.patch(
+          `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/lockers/${lockerId}/cabinets/${cabinetsID}`,
+          {
+          },
+          {
+            headers: {
+              'Authorization': `Bearer ${authToken}`,
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+
+        
+          
         console.log(response.data); 
+        console.log(response2.data); 
        
       } catch (error) {
         console.error('Error confirming and picking up:', error);
@@ -97,7 +116,13 @@ const Pickup: React.FC<PickupProps> = ({ lockerId }) => {
     } else {
       console.warn('No parcel selected.');
     }
+
+
+
+
+
   };
+  
   
 
  /* 
@@ -123,7 +148,7 @@ const Pickup: React.FC<PickupProps> = ({ lockerId }) => {
       for (let colIndex = 0; colIndex < 5; colIndex++) {
         const cabinet = fetchedCabinets[cabinetCount - 1];
         const parcelId = cabinet?.parcel?.id || null;
-        const isInTransit = cabinet?.parcel?.parcel_status === 'pending';
+        const isPending = cabinet?.parcel?.status === 'pending';
 
         arrangedCabinets.push(
           <div
@@ -134,7 +159,7 @@ const Pickup: React.FC<PickupProps> = ({ lockerId }) => {
               height: '80px',
               border: '1px solid black',
               textAlign: 'center',
-              backgroundColor: isInTransit ? '#FFD500' : 'white',
+              backgroundColor: isPending ? '#FFD500' : 'white',
               color: 'black',
               display: 'flex',
               flexDirection: 'column',
