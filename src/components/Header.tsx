@@ -41,9 +41,9 @@ const Header: React.FC<HeaderProps> = ({ userFirstName }) => {
         <Link to="/selectlocker" style={linkStyle}>
            <div style={{ ...userInfoStyle, display: 'flex', alignItems: 'center' }}>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginRight: '20px' }}>
-              <img src="src\assets\logo.png" alt="Logo" style={{  height: '30px', marginLeft: '10px' ,marginTop: '5px' }} />
+              <img src="src\assets\logo.png" alt="pulssiposti" style={{  height: '30px', marginLeft: '10px' ,marginTop: '5px' }} />
               <div style={{ display: 'flex', alignItems: 'center' }}>
-                <img src="src\assets\driver.png" alt="Logo" style={{ color: '#870939', height: '30px', marginRight: '15px' }} />
+                <img src="src\assets\driver.png" alt="Driver" style={{ color: '#870939', height: '30px', marginRight: '15px' }} />
                 <h2>{userFirstName}</h2>
               </div>
             </div>

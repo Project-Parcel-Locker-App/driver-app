@@ -12,7 +12,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) =>  {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch(`https://project-parcel-locker-app.azurewebsites.net/api/auth/login`, {
+      //const response = await fetch(`http://localhost:3000/api/auth/login`, {
+      const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/auth/login`, {
         method: 'POST',
         credentials: 'include',
         body: JSON.stringify({ email, password }),
@@ -94,7 +95,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) =>  {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
 
-      <img src="src\assets\rocket.png" alt="Logo" style={{ color: '#870939', width: '150px', marginBottom: '20px' }} />
+      <img src="src\assets\rocket.png" alt="pulssiposti" style={{ color: '#870939', width: '150px', marginBottom: '20px' }} />
       <div style={{ marginBottom: '10px', textAlign: 'left', width: '300px' }}>
         <label style={{ marginBottom: '2px', color: '#870939', display: 'block' }}>Username/Email</label>
         <input
