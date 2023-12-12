@@ -73,7 +73,7 @@ const Header: React.FC<HeaderProps> = ({ userFirstName }) => {
               <h3>Deliver</h3>
             </Link>
             <Link to="/selectlocker" style={linkStyle}>
-              <img src="src\assets\home.png" alt="Home" style={{ color: '#870939', height: '30px',marginRight: '10px' }} />
+              <img src="src\assets\home.png" alt="ChoseLocker" style={{ color: '#870939', height: '30px',marginRight: '10px' }} />
             </Link>
           </>
         )}
