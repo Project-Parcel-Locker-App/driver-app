@@ -1,5 +1,4 @@
 import React, { useState,  } from 'react';
-//import axios from 'axios';
 import { BrowserRouter as Router, Link, Routes, Route, Outlet } from 'react-router-dom';
 import Header from './Header';
 import FreeCabinetsList from './Free/FreeCabinetsList';
@@ -49,13 +48,13 @@ const DriverApp: React.FC = () => {
                 <h2>Select cabinets status</h2>
                 <div style={{ display: 'flex', gap: '10px' }}>
                   <Link to="/freeCabinets">
-                    <button style={{ backgroundColor: 'rgb(241, 226, 231)', padding: '20px', border: 'none', cursor: '#F1E2E7' }}>Free Cabinets</button>
+                    <button style={{ backgroundColor: '#870939', padding: '20px', border: 'none', cursor: '#F1E2E7' }}>Free Cabinets</button>
                   </Link>
                   <Link to="/pickup">
-                    <button style={{ backgroundColor: 'rgb(241, 226, 231)', padding: '20px', border: 'none', cursor: 'pointer' }}>Pickup</button>
+                    <button style={{ backgroundColor: '#870939', padding: '20px', border: 'none', cursor: 'pointer' }}>Pickup</button>
                   </Link>
                   <Link to="/deliver">
-                    <button style={{ backgroundColor: 'rgb(241, 226, 231)', padding: '20px', border: 'none', cursor: 'pointer' }}>Deliver</button>
+                    <button style={{ backgroundColor: '#870939', padding: '20px', border: 'none', cursor: 'pointer' }}>Deliver</button>
                   </Link>
                 </div>
                 <Outlet />

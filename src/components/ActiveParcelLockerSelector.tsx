@@ -42,7 +42,8 @@ const ActiveParcelLockerSelector: React.FC<ActiveParcelLockerSelectorProps> = ({
   
         if (userId) {
           // Construct the API URL using the retrieved user ID
-          const apiUrl = `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/users/${userId}/nearby-lockers`;
+          // const apiUrl = `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/users/${userId}/nearby-lockers`;
+          const apiUrl = `https://project-parcel-locker-app.azurewebsites.net/api/users/${userId}/nearby-lockers`;
   
           // Make the axios request with the constructed URL
           const response = await axios.get(apiUrl, {

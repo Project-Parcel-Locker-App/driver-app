@@ -49,15 +49,24 @@ const DeliverDetail: React.FC<DeliverDetailProps> = ({ lockerId }) => {
           console.error('Access token not found in cookies.');
         }
 
-        const response = await axios.get(`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/users/9a543290-977a-4434-bb93-036f314dd2df/parcels`, {
+        // const response = await axios.get(`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/users/9a543290-977a-4434-bb93-036f314dd2df/parcels`, {
+        //   headers: {
+        //     Authorization: `Bearer ${authToken}`,
+        //     'Content-Type': 'application/json',
+        //   },
+        // });
+
+        const response = await fetch(`https://project-parcel-locker-app.azurewebsites.net/api/users/9a543290-977a-4434-bb93-036f314dd2df/parcels`, {
+          method: 'GET',
           headers: {
             Authorization: `Bearer ${authToken}`,
             'Content-Type': 'application/json',
           },
         });
+        const data = await response.json();
 
-        setParcels(response.data);
-        console.log('Parcels response:', response.data);
+        setParcels(data);
+        console.log('Parcels response:', data);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -119,7 +128,8 @@ const DeliverDetail: React.FC<DeliverDetailProps> = ({ lockerId }) => {
       const response = await axios.patch(
 
        //1 for PATCH user route (with token)
-        `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/users/${senderId}/parcels/${parcelIdValue}`,
+        // `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/users/${senderId}/parcels/${parcelIdValue}`,
+        `https://project-parcel-locker-app.azurewebsites.net/api/parcels/${parcelIdValue}`,
         {
             parcel: {
               parcel_status: 'ready-for-pickup',

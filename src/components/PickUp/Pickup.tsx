@@ -27,7 +27,7 @@ const Pickup: React.FC<PickupProps> = ({ lockerId }) => {
 
   const fetchCabinetStates = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/lockers/${lockerId}/cabinets`);
+      const response = await axios.get(`https://project-parcel-locker-app.azurewebsites.net/api/lockers/${lockerId}/cabinets`);
       //const response = await axios.get(`http://localhost:3000/api/lockers/${lockerId}`);
       
    
@@ -84,7 +84,8 @@ const Pickup: React.FC<PickupProps> = ({ lockerId }) => {
         //1 for PATCH user route (with token)
         const response = await axios.patch(
 
-          `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/users/${senderId}/parcels/${selectedParcelId}`,
+          // `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/users/${senderId}/parcels/${selectedParcelId}`,
+          `https://project-parcel-locker-app.azurewebsites.net/api/parcels/${selectedParcelId}`,
           {
               parcel: {
                 parcel_status: 'in-transit',
@@ -101,7 +102,8 @@ const Pickup: React.FC<PickupProps> = ({ lockerId }) => {
 
         //2 for PATCH locker route 
         const response2 = await axios.patch(
-          `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/lockers/${lockerId}/cabinets/${cabinetsID}`,
+          // `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/lockers/${lockerId}/cabinets/${cabinetsID}`,
+          `https://project-parcel-locker-app.azurewebsites.net/api/lockers/${lockerId}/cabinets/${cabinetsID}`,
           {
           },
           {
