@@ -61,7 +61,6 @@ const Pickup: React.FC<PickupProps> = ({ lockerId }) => {
     }
   };
 
-////////////////////////////////////////////////////////////////////
   const handleConfirmAndPickup = async () => {
     if (selectedParcelId !== null&& selectedCabinetId !== null) {
       try {
@@ -116,7 +115,7 @@ const Pickup: React.FC<PickupProps> = ({ lockerId }) => {
         console.log(response.data); 
         console.log(response2.data); 
 
-        ////////redirect to the pickup page ロッカー番号拾ってないけど
+////////need test here/////////////////////
         window.location.href = '/pickup';
 
        

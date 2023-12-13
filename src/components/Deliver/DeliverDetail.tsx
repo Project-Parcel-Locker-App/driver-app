@@ -110,10 +110,8 @@ const DeliverDetail: React.FC<DeliverDetailProps> = ({ lockerId }) => {
 
        //1 for PATCH user route (with token)
 
-      
-        // キャビネットを閉じるための情報（ロッカー ID、キャビネット ID、パーセル ID）を設定
-      const lockerIdValue = lockerId;  // ロッカー ID を設定
-      const cabinetIdValue = cabinetId; // キャビネット ID を設定
+      const lockerIdValue = lockerId;  
+      const cabinetIdValue = cabinetId; 
       const parcelIdValue = selectedParcelId; 
       const senderId= selectedSender 
 
@@ -195,7 +193,7 @@ const DeliverDetail: React.FC<DeliverDetailProps> = ({ lockerId }) => {
            
           </div>
           <button
-              style={{ marginLeft: '30px', margin: '30px' }}  // スペースを追加するスタイルを指定
+              style={{ marginLeft: '30px', margin: '30px' }}  
               onClick={() => handleParcelSelection(parcel)}
             >
   Select
