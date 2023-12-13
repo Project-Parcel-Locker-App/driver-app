@@ -28,7 +28,6 @@ const Deliver: React.FC<DeliverProps> = ({ lockerId }) => {
 
       const fetchedCabinets: Cabinet[] = response.data.cabinets || [];
       
-      // idプロパティを基準に昇順にソートする
       const sortedCabinets = fetchedCabinets.sort((a, b) => a.id - b.id);
       console.log('sortedCabinets:', sortedCabinets);
 
@@ -114,7 +113,7 @@ const Deliver: React.FC<DeliverProps> = ({ lockerId }) => {
   return (
     <div>
       
-      <h2>Deliver Cabinets</h2>
+      <h2 style={{ marginTop: '70px' }}>Deliver Cabinets</h2>
     
       <p>You can deliver to the colored cabinets.  </p>
       <p>Please choose one cabinet</p>

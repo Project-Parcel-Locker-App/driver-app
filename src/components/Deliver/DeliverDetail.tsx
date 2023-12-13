@@ -7,6 +7,7 @@ interface Parcel {
   sender: string;
   recipient: string;
   special_instructions: string;  
+  sender_id: string;
   // Additional Parcel Information
 }
 /* 
@@ -28,7 +29,7 @@ const DeliverDetail: React.FC<DeliverDetailProps> = ({ lockerId }) => {
   const [selectedSender, setSelectedSender] = useState<string | null>(null);
   const [doorClosed, setDoorClosed] = useState(false);
   const selectedParcelRef = useRef<HTMLDivElement>(null);
-  const [parcels, setParcels] = useState<Parcel[]>([]); // 新しく追加
+  const [parcels, setParcels] = useState<Parcel[]>([]); 
   console.log('selectedSender:', selectedSender);
 
 
@@ -48,7 +49,7 @@ const DeliverDetail: React.FC<DeliverDetailProps> = ({ lockerId }) => {
           console.error('Access token not found in cookies.');
         }
 
-        const response = await axios.get(`http://localhost:3000/api/users/9a543290-977a-4434-bb93-036f314dd2df/parcels`, {
+        const response = await axios.get(`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/users/9a543290-977a-4434-bb93-036f314dd2df/parcels`, {
           headers: {
             Authorization: `Bearer ${authToken}`,
             'Content-Type': 'application/json',
@@ -62,24 +63,111 @@ const DeliverDetail: React.FC<DeliverDetailProps> = ({ lockerId }) => {
       }
     };
 
-    fetchData(); // 関数を呼び出し
+    fetchData(); 
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // コンポーネントがマウントされたときだけ実行
+  }, []); 
 
   const handleParcelSelection = (selectedParcel: Parcel) => {
     setSelectedParcelId(selectedParcel.id);
-    setSelectedSender(selectedParcel.sender);
+    setSelectedSender(selectedParcel.sender_id);
 
     if (selectedParcelRef.current) {
       selectedParcelRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   };
 
-  const handleCloseDoor = () => {
+  ////////////////////////////how to get access token from cookie///////////////////////////////
+  const getAccessTokenFromCookie = () => {
+    const cookies = document.cookie.split(';');
+    for (const cookie of cookies) {
+      const [name, value] = cookie.trim().split('=');
+      if (name === '_access_token_') {
+        return value;
+      }
+    }
+    return null;
+  };
+  const accessToken = getAccessTokenFromCookie();
+
+
+  //////////////////////////////////////////////
+
+  const handleCloseDoor = async () => {
+    try {
+       // 1. get access token from cookie
+       const authTokenRow = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('_access_token_='));
+
+      const authToken = authTokenRow ? authTokenRow.split('=')[1] : undefined;
+
+        if (authToken) {
+          console.log(authToken);
+        } else {
+          console.error('Access token not found in cookies.');
+        }
+
+       //1 for PATCH user route (with token)
+
+      const lockerIdValue = lockerId;  
+      const cabinetIdValue = cabinetId; 
+      const parcelIdValue = selectedParcelId; 
+      const senderId= selectedSender 
+
+
+      const response = await axios.patch(
+
+       //1 for PATCH user route (with token)
+        `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/users/${senderId}/parcels/${parcelIdValue}`,
+        {
+            parcel: {
+              parcel_status: 'ready-for-pickup',
+            },
+           
+        },
+          {
+          headers: {
+            'Authorization': `Bearer ${authToken}`,
+            'Content-Type': 'application/json',
+          },
+        }  
+      );
+
+      //////////////////need more parcels belong to driver and test more!/////////////////////
+       //2 for PATCH locker route 
+      const response2 = await axios.patch(
+        `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/lockers/${lockerIdValue}/cabinets/${cabinetIdValue}`,
+        {   parcelId: parcelIdValue,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+          },
+        }
+
+       
+      );
+      console.log(response.data);
+      console.log(response2.data);
+
+
+      
+      if (response.status === 200) {
+        console.log('Door closed successfully!update parcel status to null');
+        setDoorClosed(true);
+      } else {
+        console.error('Door closure failed:', response.data);
+      }
+    } catch (error) {
+      console.error('Error closing door:', error);
+    }
+
     console.log('Door closed!');
     setDoorClosed(true);
   };
+  
 
   return (
     <div>
@@ -98,14 +186,18 @@ const DeliverDetail: React.FC<DeliverDetailProps> = ({ lockerId }) => {
           }}
         >
           <div style={{ flex: 1 }}>
-            <h3>Parcel {index + 1} Details</h3>
+            <h3> Details</h3>
             <p>ID: {parcel.id}</p>
-            <p>Sender: {parcel.sender}</p>
-            <p>Recipient: {parcel.recipient}</p>
-            <p>special_instructions: {parcel.special_instructions}</p>
+            <p>Sender: {parcel.sender_id}</p>
+            <p>instructions: {parcel.special_instructions}</p>
            
           </div>
-          <button onClick={() => handleParcelSelection(parcel)}>Select</button>
+          <button
+              style={{ marginLeft: '30px', margin: '30px' }}  
+              onClick={() => handleParcelSelection(parcel)}
+            >
+  Select
+</button>
         </div>
       ))}
 
@@ -122,185 +214,3 @@ const DeliverDetail: React.FC<DeliverDetailProps> = ({ lockerId }) => {
 };
 
 export default DeliverDetail;
-
-
-
-
-
-/* import React, { useState, useRef , useEffect} from 'react';
-import { useParams } from 'react-router-dom';
-import axios from 'axios';
-
-interface Parcel {
-  id: string;
-  sender: string;
-  recipient: string;
-  // Additional Parcel Information
-}
-
-interface CabinetDetails {
-  id: string;
-  size: string;
-  status: string;
-  parcels: Parcel[];
-}
-
-interface DeliverDetailProps {
-  lockerId: string;
-}
-
-const DeliverDetail: React.FC<DeliverDetailProps> = ({ lockerId }) => {
-  const { cabinetId } = useParams<{ cabinetId?: string }>();
-  const [selectedParcel, setSelectedParcel] = useState<Parcel | null>(null);
-  const [doorClosed, setDoorClosed] = useState(false);
-  const selectedParcelRef = useRef<HTMLDivElement>(null);
-  const [parcels, setParcels] = useState<Parcel[]>([]); // 新しく追加
-
-  useEffect(() => {
-    // データを取得する関数
-    const fetchData = async () => {
-      try {
-        const authTokenRow = document.cookie
-        .split('; ')
-        .find(row => row.startsWith('_access_token_='));
-
-        const authToken = authTokenRow ? authTokenRow.split('=')[1] : undefined;
-
-          if (authToken) {
-            console.log(authToken);
-          } else {
-            console.error('Access token not found in cookies.');
-          }
-        
-        const response = await axios.get(`http://localhost:3000/api/users/9a543290-977a-4434-bb93-036f314dd2df/parcels`, {
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-            'Content-Type': 'application/json',
-          },
-        });
-
-        setParcels(response.data);
-        console.log('Parcels response:', response.data);
-
-
-
-
-
-
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    fetchData(); // 関数を呼び出し
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // コンポーネントがマウントされたときだけ実行
-
-
-
-  
-  const cabinetDetails: CabinetDetails = {
-    id: cabinetId || 'defaultCabinetId',
-    size: 'Medium',
-    status: 'in-use',
-    parcels: [
-      {
-        id: '123',
-        sender: 'John Doe',
-        recipient: 'Jane Doe',
-        // Additional Parcel Information
-      },
-      {
-        id: '124',
-        sender: 'Alice',
-        recipient: 'Bob',
-        // Additional Parcel Information
-      },
-      {
-        id: '125',
-        sender: 'Charlie',
-        recipient: 'David',
-        // Additional Parcel Information
-      },
-      {
-        id: '126',
-        sender: 'Eve',
-        recipient: 'Frank',
-        // Additional Parcel Information
-      },
-      {
-        id: '127',
-        sender: 'Grace',
-        recipient: 'Harry',
-        // Additional Parcel Information
-      },
-      {
-        id: '128',
-        sender: 'Ivy',
-        recipient: 'Jack',
-        // Additional Parcel Information
-      },
-      {
-        id: '129',
-        sender: 'Katherine',
-        recipient: 'Leo',
-        // Additional Parcel Information
-      },
-    ],
-  };
-
-  const handleParcelSelection = (selectedParcel: Parcel) => {
-    setSelectedParcel(selectedParcel);
-
- 
-    if (selectedParcelRef.current) {
-      selectedParcelRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  };
-
-  const handleCloseDoor = () => {
-    console.log('Door closed!');
-    setDoorClosed(true);
-  };
-
-  return (
-    <div>
-      <h2>Locker {lockerId}</h2>
-      <h2>Select the parcel to cabinet {cabinetDetails.id} </h2>
-
-      {cabinetDetails.parcels.map((parcel, index) => (
-        <div key={index} style={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #ccc', padding: '16px 0', backgroundColor: selectedParcel === parcel ? '#eee' : 'inherit' }}>
-          <div style={{ flex: 1 }}>
-            <h3>Parcel {index + 1} Details</h3>
-            <p>ID: {parcel.id}</p>
-            <p>Sender: {parcel.sender}</p>
-            <p>Recipient: {parcel.recipient}</p>
-          </div>
-          <button onClick={() => handleParcelSelection(parcel)}>Select</button>
-        </div>
-      ))}
-{selectedParcel && !doorClosed && (
-  <div
-    ref={selectedParcelRef}
-    style={{
-      backgroundColor: '#F1E2E7',
-      padding: '20px', 
-      width: '300px',
-      height: '550px', 
-    }}
-  >
-    <h3>Selected Parcel Details to Cabinet {cabinetDetails.id} </h3>
-    <p>ID: {selectedParcel.id}</p>
-    <p>Sender: {selectedParcel.sender}</p>
-    <p>Recipient: {selectedParcel.recipient}</p>
-  </div>
-)}
-
-      {!doorClosed && <button onClick={handleCloseDoor} style={{ background: '#870939',color: 'white', padding: '20px', marginTop: '30px',alignItems: 'center',}}>Confirm and Close Door</button>}
-    </div>
-  );
-};
-
-export default DeliverDetail;
-  */

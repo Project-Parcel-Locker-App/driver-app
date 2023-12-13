@@ -11,16 +11,6 @@ password1234
 
 This application is part of the Advanced Web Applications Project (DIN22SP) for creating a packet receiving and sending application. The focus of this app is to facilitate the workflow for delivery truck drivers interacting with the automated parcel delivery point/locker system.
 
-## Table of Contents
-- [Introduction](#introduction)
-- [Features](#features)
-- [Requirements](#requirements)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Configuration](#configuration)
-- [Contributing](#contributing)
-- [License](#license)
-
 ## Introduction
 
 The Parcel Delivery Driver App is designed to assist delivery truck drivers in managing parcel pickups and deliveries at various parcel locker locations. It provides a user-friendly interface for drivers to interact with the system.
@@ -50,15 +40,4 @@ The Parcel Delivery Driver App is designed to assist delivery truck drivers in m
 - Build Tool: Vite  
 - Routing: React Router Dom    
 - HTTP Requests: Axios  
-
-## Installation
-
-
-
-1. Clone the repository:
-
-   ```bash
-   git clone <repository-url>
-   cd parcel-delivery-driver-app
-
 

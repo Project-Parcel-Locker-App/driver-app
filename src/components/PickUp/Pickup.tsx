@@ -9,8 +9,10 @@ interface Cabinet {
   cabinet_status: string;
   parcel: {
     id: number;
-    parcel_status: string;
+    status: string;
+    sender_id: number;
   } | null;
+  sender_id: number;
 }
 
 interface PickupProps {
@@ -21,6 +23,7 @@ const Pickup: React.FC<PickupProps> = ({ lockerId }) => {
   const [fetchedCabinets, setFetchedCabinets] = useState<Cabinet[]>([]);
   const [selectedParcelId, setSelectedParcelId] = useState<number | null>(null);
   const [selectedCabinetId, setSelectedCabinetId] = useState<number | null>(null); // 新しいステート
+  const [senderId, setSenderId] = useState<number | null>(null); // 新しいステート
 
   const fetchCabinetStates = async () => {
     try {
@@ -50,11 +53,14 @@ const Pickup: React.FC<PickupProps> = ({ lockerId }) => {
     if (clickedCabinet) {
       setSelectedParcelId(parcelId);
       setSelectedCabinetId(clickedCabinet.id);
+      setSenderId(clickedCabinet.parcel?.sender_id ?? null);
       console.log('Selected Cabinet ID:', clickedCabinet.id);
+      console.log('Selected Sender ID:', clickedCabinet.parcel?.sender_id ?? null);
+      const senderId=clickedCabinet.parcel?.sender_id ?? null;
+      console.log('Selected Sender ID:', senderId);
     }
   };
 
-////////////////////////////////////////////////////////////////////
   const handleConfirmAndPickup = async () => {
     if (selectedParcelId !== null&& selectedCabinetId !== null) {
       try {
@@ -72,14 +78,18 @@ const Pickup: React.FC<PickupProps> = ({ lockerId }) => {
         }
 
         const cabinetsID = selectedCabinetId;
+        console.log('cellectedCabinetId:',cabinetsID);
+        console.log('cellectedParcelId:',selectedParcelId);
+
+        //1 for PATCH user route (with token)
         const response = await axios.patch(
-          `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/lockers/${lockerId}/cabinets/${cabinetsID}`,
+
+          `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/users/${senderId}/parcels/${selectedParcelId}`,
           {
-            cabinet: {
               parcel: {
                 parcel_status: 'in-transit',
               },
-            },
+              driver_id: "9a543290-977a-4434-bb93-036f314dd2df",
           },
             {
             headers: {
@@ -88,8 +98,26 @@ const Pickup: React.FC<PickupProps> = ({ lockerId }) => {
             },
           }  
         );
-  
+
+        //2 for PATCH locker route 
+        const response2 = await axios.patch(
+          `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/lockers/${lockerId}/cabinets/${cabinetsID}`,
+          {
+          },
+          {
+            headers: {
+              'Authorization': `Bearer ${authToken}`,
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+
         console.log(response.data); 
+        console.log(response2.data); 
+
+////////need test here/////////////////////
+        window.location.href = '/pickup';
+
        
       } catch (error) {
         console.error('Error confirming and picking up:', error);
@@ -97,19 +125,8 @@ const Pickup: React.FC<PickupProps> = ({ lockerId }) => {
     } else {
       console.warn('No parcel selected.');
     }
-  };
-  
 
- /* 
-  const handleConfirmAndPickup = () => {
-    // Implement the logic for confirming and picking up the selected parcel
-    if (selectedParcelId !== null) {
-      // Add your confirmation and pickup logic here
-      console.log(`Confirmed and Picked up Parcel ID: ${selectedParcelId}`);
-    } else {
-      console.warn('No parcel selected.');
-    }
-  }; */
+  };
 
   const arrangeCabinets = () => {
     const arrangedCabinets: JSX.Element[] = [];
@@ -123,7 +140,7 @@ const Pickup: React.FC<PickupProps> = ({ lockerId }) => {
       for (let colIndex = 0; colIndex < 5; colIndex++) {
         const cabinet = fetchedCabinets[cabinetCount - 1];
         const parcelId = cabinet?.parcel?.id || null;
-        const isInTransit = cabinet?.parcel?.parcel_status === 'pending';
+        const isPending = cabinet?.parcel?.status === 'pending';
 
         arrangedCabinets.push(
           <div
@@ -134,7 +151,7 @@ const Pickup: React.FC<PickupProps> = ({ lockerId }) => {
               height: '80px',
               border: '1px solid black',
               textAlign: 'center',
-              backgroundColor: isInTransit ? '#FFD500' : 'white',
+              backgroundColor: isPending ? '#FFD500' : 'white',
               color: 'black',
               display: 'flex',
               flexDirection: 'column',
@@ -181,6 +198,7 @@ const Pickup: React.FC<PickupProps> = ({ lockerId }) => {
       {selectedParcelId !== null && (
         <div>
           <p>Selected Parcel ID: {selectedParcelId}</p>
+          <div>Sender ID: {senderId}</div>
           <button onClick={handleConfirmAndPickup}>Confirm and Pickup</button>
         </div>
       )}
