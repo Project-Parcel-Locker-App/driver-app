@@ -12,14 +12,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) =>  {
 
   const handleLogin = async () => {
     try {
-<<<<<<< HEAD
-      //const response = await fetch(`http://localhost:3000/api/auth/login`, {
-      const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/auth/login`, {
-=======
-
-      const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/auth/login`, {
-      //const response = await fetch(`https://project-parcel-locker-app.azurewebsites.net/api/auth/login`, {
->>>>>>> 1632c26c65fa58306ec5c6a00a535bfdb0cd59a7
+      // const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/auth/login`, {
+      const response = await fetch(`https://project-parcel-locker-app.azurewebsites.net/api/auth/login`, {
         method: 'POST',
         credentials: 'include',
         body: JSON.stringify({ email, password }),
@@ -31,9 +25,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) =>  {
       const data = await response.json();
 
       if (response.ok) {
-        console.log('Login successful:', data);
-
-       
         const { _access_token_ } = data;
 
         // keep the token in local storage
@@ -63,8 +54,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) =>  {
      const userIdCookie = cookies.find((cookie) => cookie.includes('user_id'));
      const userId = userIdCookie ? userIdCookie.split('=')[1] : null;
 
-    const apiUrl = `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/users/${userId}`;
-   // const apiUrl = 'http://localhost:3000/api/users/9a543290-977a-4434-bb93-036f314dd2df';
+    // const apiUrl = `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/users/${userId}`;
+    const apiUrl = `https://project-parcel-locker-app.azurewebsites.net/api/users/${userId}`;
 
     try {
       const response = await fetch(apiUrl, {
